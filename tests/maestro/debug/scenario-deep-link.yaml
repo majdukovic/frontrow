@@ -1,0 +1,17 @@
+# Apply a seed scenario via deep link, then verify the app reflects it.
+appId: app.frontrow.qa
+---
+- launchApp:
+    clearState: true
+
+# Sign in first
+- runFlow: ../auth/login.yaml
+
+# Apply expired_tickets via debug deep link
+- openLink: 'frontrow://debug/seed/expired_tickets'
+
+# Open My Tickets and verify the status shows used (past)
+- tapOn: 'My Tickets'
+- assertVisible:
+    id: 'screen.myTickets'
+- assertVisible: 'used'

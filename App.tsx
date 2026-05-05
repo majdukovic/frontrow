@@ -11,6 +11,17 @@ import { i18n } from './src/i18n';
 import { queryClient } from './src/hooks/queryClient';
 import { useAuthStore } from './src/state/auth';
 import { useQaStore } from './src/state/qa';
+import { useDeepLinkScenario } from './src/hooks/useDeepLinkScenario';
+
+function AppShell() {
+  useDeepLinkScenario();
+  return (
+    <NavigationContainer linking={linking}>
+      <RootNavigator />
+      <StatusBar style="auto" />
+    </NavigationContainer>
+  );
+}
 
 export default function App() {
   const hydrateAuth = useAuthStore((s) => s.hydrate);
@@ -25,10 +36,7 @@ export default function App() {
     <SafeAreaProvider>
       <I18nextProvider i18n={i18n}>
         <QueryClientProvider client={queryClient}>
-          <NavigationContainer linking={linking}>
-            <RootNavigator />
-            <StatusBar style="auto" />
-          </NavigationContainer>
+          <AppShell />
         </QueryClientProvider>
       </I18nextProvider>
     </SafeAreaProvider>

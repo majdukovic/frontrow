@@ -1,0 +1,14 @@
+# Toggle the Force-Error switch to 5xx, then verify the events list shows the error state.
+appId: app.frontrow.qa
+---
+- launchApp:
+    clearState: true
+
+- tapOn: 'Debug'
+- assertVisible:
+    id: 'screen.debug'
+- tapOn:
+    id: 'debug.forceError.5xx'
+
+- tapOn: 'Events'
+- assertVisible: 'Failed to load events'
