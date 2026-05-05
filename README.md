@@ -2,25 +2,21 @@
 
 > An open-source mobile app explicitly designed as a **QA automation training playground**.
 
-FrontRow is a concert & events ticketing app for iOS and Android. It is intentionally built so that QA engineers can practice mobile test automation against a realistic-looking app that ships with stable accessibility identifiers, a debug menu, deterministic seed data, and hooks for every device-only capability that browsers can't reach.
+FrontRow is a concert & events ticketing app for iOS and Android, built so that QA engineers can practice mobile test automation against a realistic-looking app that ships with stable accessibility identifiers, a fully-featured debug menu, deterministic seed data, and a complete set of hooks for every device-only capability that browsers can't reach.
 
-It is the kind of app you would clone, run on a simulator in under five minutes, and then use to learn — or teach — Maestro, Appium, Espresso, and XCUITest.
-
-## Status
-
-Pre-alpha. Phase 0 (skeleton) is in progress. See [Roadmap](#roadmap).
+It's the kind of app you'd clone, run on a simulator in under five minutes, and then use to learn — or teach — Maestro, Appium, Espresso, and XCUITest, all targeting the same identifiers.
 
 ## Why this exists
 
 - The widely-used Sauce Labs `my-demo-app-rn` was deprecated in May 2024.
-- Existing Maestro/Appium sample apps cover only login + cart.
-- Nothing systematically exercises date control, location mocking, IAP simulation, purchase restoration, microphone, haptic feedback, biometric, push, deep links to arbitrary screens, and seedable scenarios all in one place.
+- Existing open-source samples cover login + cart and stop there.
+- Nothing systematically exercises date control, location mocking, IAP simulation, purchase restoration, microphone, haptic feedback, biometric auth, push, deep-link-to-anywhere, and seedable scenarios all in one place.
 
-FrontRow fills that gap, MIT-licensed, fork-friendly, no backend required.
+FrontRow fills that gap. MIT-licensed, fork-friendly, no backend required.
 
 ## Quick start
 
-Requires Node 20+ and either the Expo Go app on a device or an iOS simulator / Android emulator.
+Requires Node 20+ and either Xcode or Android Studio.
 
 ```bash
 git clone <this repo>
@@ -31,34 +27,52 @@ npm run ios       # or: npm run android
 
 That's it. No backend to run, no accounts to create, no secrets to configure.
 
+> Some Phase 5+ capabilities (MMKV, real local notifications) require a development build. The standard `npm run ios` / `npm run android` covers that — Expo Go alone is not enough once `expo prebuild` has run.
+
 ## What's inside
 
-- **React Native + Expo (managed mode for now)** — single codebase, runs on Expo Go.
-- **Local-first** — all data lives in `AsyncStorage`, seeded from JSON fixtures. Mock API via MSW.
-- **Stable test IDs** — central registry in `src/testIds.ts`, lint rule enforces coverage.
-- **QA Debug Menu** — long-press the logo or shake to open. Deep-link to any screen, seed scenarios, time-travel, mock location, fire fake push, simulate IAP outcomes, force errors.
-- **Deep link contract** — every public deep link documented in `docs/DEEPLINKS.md`.
-- **Hermetic mode** — `QA_MODE=1` disables animations, forces deterministic IDs, routes API to the mock layer, suppresses real push.
+- **React Native + Expo (prebuilt)** — single TypeScript codebase, native iOS and Android projects committed.
+- **Local-first** — all data lives in MMKV, seeded from JSON fixtures, no backend.
+- **Stable test IDs** — central registry in `src/testIds.ts`. testIDs become `accessibilityIdentifier` on iOS and `resource-id` on Android, so Maestro / Appium / Espresso / XCUITest all hit the same selectors.
+- **QA Debug Menu** — Build info · Jump-to-screen · Device-capability demos · Seed scenarios · Time travel · Force error · Network delay · Locale override · Fake push · Crash · IAP outcome control · Analytics event log · Reset.
+- **Deep-link contract** — every public deep link documented in [docs/DEEPLINKS.md](docs/DEEPLINKS.md), including `frontrow://debug/seed/<scenario>` to put the app into a known state from a single `launchApp` directive.
+- **Mock IAP** — products, receipts, restore-purchases, with QA-controlled outcomes (success, decline, cancel, pending) — see [docs/tutorials/SCENARIOS_AS_FIXTURES.md](docs/tutorials/SCENARIOS_AS_FIXTURES.md).
+- **Device capability demos** — camera, microphone, location, biometric, haptics, calendar, share, notifications. Each has a dedicated screen with stable testIDs.
 
 ## Test frameworks
 
-| Framework                 | Status  | Lives in          |
-| ------------------------- | ------- | ----------------- |
-| Maestro                   | Phase 1 | `tests/maestro/`  |
-| Appium (WebdriverIO + TS) | Phase 6 | `tests/appium/`   |
-| Espresso (Android)        | Phase 5 | `tests/espresso/` |
-| XCUITest (iOS)            | Phase 5 | `tests/xcuitest/` |
+| Framework                 | Lives in          | Tutorial                                       |
+| ------------------------- | ----------------- | ---------------------------------------------- |
+| Maestro                   | `tests/maestro/`  | [Maestro 101](docs/tutorials/MAESTRO_101.md)   |
+| Appium (WebdriverIO + TS) | `tests/appium/`   | [Appium 101](docs/tutorials/APPIUM_101.md)     |
+| Espresso (Android)        | `tests/espresso/` | [Espresso 101](docs/tutorials/ESPRESSO_101.md) |
+| XCUITest (iOS)            | `tests/xcuitest/` | [XCUITest 101](docs/tutorials/XCUITEST_101.md) |
+
+A flow is a flow regardless of framework. Look at `tests/maestro/auth/login.yaml` and `tests/appium/specs/login.spec.ts` side by side — they target identical test IDs.
+
+## Documentation map
+
+- [docs/DEEPLINKS.md](docs/DEEPLINKS.md) — full deep-link contract.
+- [docs/DEBUG_MENU.md](docs/DEBUG_MENU.md) — every QA Debug Menu action.
+- [docs/SCENARIOS.md](docs/SCENARIOS.md) — seed scenario catalog.
+- [docs/TEST_IDS.md](docs/TEST_IDS.md) — testID conventions and lint rules.
+- [docs/A11Y.md](docs/A11Y.md) — accessibility checklist.
+- [docs/NATIVE_TESTING.md](docs/NATIVE_TESTING.md) — how testIDs map to native identifiers.
+- [docs/CI.md](docs/CI.md) — CI strategy (free PR checks + opt-in cloud labs).
+- [docs/tutorials/](docs/tutorials/) — framework-by-framework walkthroughs.
 
 ## Roadmap
 
-- **Phase 0** — Repo skeleton, toolchain, CI, navigation, placeholder screens.
-- **Phase 1** — Mock API + persistence + core flows (auth, browse, buy ticket, my tickets) + first Maestro flows.
-- **Phase 2** — QA Debug Menu, hermetic test mode, deep-link-to-anywhere.
-- **Phase 3** — Device capabilities (camera, mic, location, biometric, haptic, calendar, share, background).
-- **Phase 4** — Mock IAP (success, decline, cancel, restore, refund).
-- **Phase 5** — Native showcase (Swift + Kotlin screens) + MMKV migration + Espresso + XCUITest.
-- **Phase 6** — Appium suite + cloud lab CI (Sauce Labs / BrowserStack / Maestro Cloud).
-- **Phase 7** — Tutorials, scenario recipes, README polish.
+| Phase | Scope                                                                                     | Status |
+| ----- | ----------------------------------------------------------------------------------------- | ------ |
+| 0     | Repo skeleton, toolchain, CI, navigation                                                  | ✓      |
+| 1     | Mock API + persistence + core flows + first Maestro flows                                 | ✓      |
+| 2     | QA Debug Menu + hermetic mode + deep-link-to-anywhere                                     | ✓      |
+| 3     | Device capability demos (camera, mic, location, biometric, haptic, calendar, share, push) | ✓      |
+| 4     | Mock IAP (success, decline, cancel, restore, refund)                                      | ✓      |
+| 5     | `expo prebuild`, MMKV migration, Espresso + XCUITest scaffolding                          | ✓      |
+| 6     | Appium WebdriverIO suite + Maestro Cloud CI                                               | ✓      |
+| 7     | Tutorials, scenario recipes, README polish                                                | ✓      |
 
 ## Contributing
 
