@@ -1,0 +1,27 @@
+name: Maestro
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+# This workflow expects two repository secrets:
+#   MAESTRO_CLOUD_API_KEY        — from https://app.mobile.dev
+#   IOS_BUILD_URL / ANDROID_BUILD_URL — pre-built binaries OR build them in earlier jobs.
+#
+# It is intentionally manual + tag-only by default so contributors don't need
+# Maestro Cloud credentials for everyday PRs (Maestro can also run locally).
+
+jobs:
+  maestro-cloud:
+    if: ${{ secrets.MAESTRO_CLOUD_API_KEY != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Maestro Cloud
+        uses: mobile-dev-inc/action-maestro-cloud@v1
+        with:
+          api-key: ${{ secrets.MAESTRO_CLOUD_API_KEY }}
+          app-file: ${{ secrets.IOS_BUILD_URL || secrets.ANDROID_BUILD_URL }}
+          workspace: ./tests/maestro

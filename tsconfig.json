@@ -6,5 +6,5 @@
     "resolveJsonModule": true
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
-  "exclude": ["node_modules", "ios", "android", ".expo", "dist", "web-build"]
+  "exclude": ["node_modules", "ios", "android", ".expo", "dist", "web-build", "tests/appium"]
 }
