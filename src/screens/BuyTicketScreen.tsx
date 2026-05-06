@@ -70,6 +70,7 @@ export function BuyTicketScreen({ route }: Props) {
       <Text style={styles.heading}>{event.title}</Text>
       <View testID={testIds.buyTicket.quantityStepper} style={styles.stepper}>
         <Pressable
+          testID={testIds.buyTicket.quantityDecrement}
           accessibilityRole="button"
           accessibilityLabel="Decrease quantity"
           onPress={() => setQty((q) => Math.max(1, q - 1))}
@@ -81,6 +82,7 @@ export function BuyTicketScreen({ route }: Props) {
           {qty}
         </Text>
         <Pressable
+          testID={testIds.buyTicket.quantityIncrement}
           accessibilityRole="button"
           accessibilityLabel="Increase quantity"
           onPress={() => setQty((q) => Math.min(10, q + 1))}
@@ -97,7 +99,11 @@ export function BuyTicketScreen({ route }: Props) {
             <Text testID={testIds.buyTicket.promoSuccess} style={styles.promoSuccess}>
               {promo.code} — {promo.percentOff}% off
             </Text>
-            <Pressable accessibilityRole="button" onPress={onClearPromo}>
+            <Pressable
+              testID={testIds.buyTicket.promoRemoveButton}
+              accessibilityRole="button"
+              onPress={onClearPromo}
+            >
               <Text style={styles.promoRemove}>Remove</Text>
             </Pressable>
           </View>

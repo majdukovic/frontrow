@@ -39,6 +39,8 @@ import { testIds } from '@/testIds';
 <Button testID={testIds.eventDetail.buyButton} accessibilityLabel="Buy ticket" onPress={onBuy} />;
 ```
 
+The lint rule `frontrow/require-testid` (defined in `eslint-rules/require-testid.js`) warns on `Pressable`, `Touchable*`, `Switch`, `Button`, and any custom `*Button` component with `onPress` that ships without a `testID`. Run `npm run lint` to surface gaps before they reach review.
+
 ## Adding a deep link
 
 Public deep links are part of the test surface. Document them in `docs/DEEPLINKS.md` with example payloads.

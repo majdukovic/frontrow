@@ -152,11 +152,14 @@ export const testIds = {
   buyTicket: {
     screen: 'screen.buyTicket',
     quantityStepper: 'buyTicket.quantityStepper',
+    quantityDecrement: 'buyTicket.quantityDecrement',
+    quantityIncrement: 'buyTicket.quantityIncrement',
     payButton: 'buyTicket.payButton',
     promoInput: 'buyTicket.promoInput',
     promoApplyButton: 'buyTicket.promoApplyButton',
     promoSuccess: 'buyTicket.promoSuccess',
     promoError: 'buyTicket.promoError',
+    promoRemoveButton: 'buyTicket.promoRemoveButton',
     totalAmount: 'buyTicket.totalAmount',
   },
 } as const;

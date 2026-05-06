@@ -165,6 +165,7 @@ export function DebugScreen() {
           {PRESET_TIME_OFFSETS.map((p) => (
             <Button
               key={p.label}
+              testID={`debug.timeOffset.${p.ms}`}
               title={p.label}
               variant={qa.timeOffsetMs === p.ms ? 'primary' : 'secondary'}
               onPress={() => void qa.setTimeOffsetMs(p.ms)}
@@ -196,6 +197,7 @@ export function DebugScreen() {
             {PRESET_DELAYS.map((ms) => (
               <Button
                 key={ms}
+                testID={`debug.networkDelay.${ms}`}
                 title={ms === 0 ? 'Off' : `${ms}ms`}
                 variant={qa.networkDelayMs === ms ? 'primary' : 'secondary'}
                 onPress={() => {
@@ -220,6 +222,7 @@ export function DebugScreen() {
             testID="debug.localeInput"
           />
           <Button
+            testID="debug.localeSet"
             title="Set"
             variant="secondary"
             onPress={() => void qa.setLocale(localeDraft.trim() || null)}
