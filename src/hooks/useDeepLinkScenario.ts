@@ -60,6 +60,16 @@ export function useDeepLinkScenario(): void {
         return;
       }
 
+      // frontrow://debug/replayOnboarding — sets onboardingPending so
+      // flows can drive the onboarding UI without scrolling the debug
+      // screen to find the replay button. Mirrors the debug-menu row
+      // but is reachable in one step from any state.
+      if (/(?:^|\/)debug\/replayOnboarding$/.test(segments)) {
+        void useSettingsStore.getState().startOnboarding();
+        track('debug.onboarding.replay');
+        return;
+      }
+
       // Fast-boot for E2E: pre-auth + onboarding-done + clean state in
       // one openLink. Saves the ~7 taps + ~5s per auth-needing flow.
       if (/(?:^|\/)e2e\/setup$/.test(segments)) {

@@ -117,6 +117,15 @@ describe('debug/reset', () => {
   });
 });
 
+describe('debug/replayOnboarding', () => {
+  it('flips onboardingPending to true so the carousel shows on next render', async () => {
+    useSettingsStore.setState({ onboardingPending: false });
+    renderHook(() => useDeepLinkScenario(), { wrapper: makeWrapper() });
+    await fireUrl('frontrow://debug/replayOnboarding');
+    expect(useSettingsStore.getState().onboardingPending).toBe(true);
+  });
+});
+
 describe('e2e/setup', () => {
   it('signs in the demo user and issues a session token', async () => {
     renderHook(() => useDeepLinkScenario(), { wrapper: makeWrapper() });

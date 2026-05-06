@@ -8,17 +8,7 @@ appId: app.frontrow.qa
       id: 'screen.events'
     timeout: 20000
 
-- tapOn:
-    id: 'tab.debug'
-- assertVisible:
-    id: 'screen.debug'
-- scrollUntilVisible:
-    element:
-      id: 'debug.replayOnboardingButton'
-    direction: DOWN
-    timeout: 15000
-- tapOn:
-    id: 'debug.replayOnboardingButton'
+- openLink: 'frontrow://debug/replayOnboarding'
 
 - assertVisible:
     id: 'screen.onboarding'
