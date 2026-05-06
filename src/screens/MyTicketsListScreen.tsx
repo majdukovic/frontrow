@@ -1,8 +1,10 @@
+import { useMemo, useState } from 'react';
 import {
   View,
   Text,
   FlatList,
   Pressable,
+  ScrollView,
   RefreshControl,
   ActivityIndicator,
   StyleSheet,
@@ -18,12 +20,25 @@ import { useMyTickets } from '../hooks/useTickets';
 import { useAuthStore } from '../state/auth';
 import { formatPrice, formatEventDate } from '../utils/format';
 import type { TicketsStackParamList } from '../navigation/types';
+import type { TicketStatus } from '../api/types';
+
+type Filter = 'all' | 'active' | 'past';
+
+const ACTIVE_STATUSES: TicketStatus[] = ['active', 'refund_pending'];
 
 export function MyTicketsListScreen() {
   const { t } = useTranslation();
   const nav = useNavigation<NativeStackNavigationProp<TicketsStackParamList>>();
   const token = useAuthStore((s) => s.token);
   const { data, isLoading, isRefetching, refetch, error } = useMyTickets();
+  const [filter, setFilter] = useState<Filter>('all');
+
+  const items = useMemo(() => {
+    const all = data ?? [];
+    if (filter === 'active') return all.filter((tk) => ACTIVE_STATUSES.includes(tk.status));
+    if (filter === 'past') return all.filter((tk) => !ACTIVE_STATUSES.includes(tk.status));
+    return all;
+  }, [data, filter]);
 
   if (!token) {
     return (
@@ -49,22 +64,42 @@ export function MyTicketsListScreen() {
     );
   }
 
-  if (!data?.length) {
-    return (
-      <View style={styles.center} testID={testIds.myTickets.screen}>
-        <Text style={styles.heading}>{t('myTickets.heading')}</Text>
-        <Text style={styles.muted}>{t('myTickets.placeholder')}</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container} testID={testIds.myTickets.screen}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.chipRow}
+        style={styles.chipScroll}
+      >
+        <Chip
+          testID={testIds.myTickets.filterChip('all')}
+          label="All"
+          selected={filter === 'all'}
+          onPress={() => setFilter('all')}
+        />
+        <Chip
+          testID={testIds.myTickets.filterChip('active')}
+          label="Active"
+          selected={filter === 'active'}
+          onPress={() => setFilter('active')}
+        />
+        <Chip
+          testID={testIds.myTickets.filterChip('past')}
+          label="Past"
+          selected={filter === 'past'}
+          onPress={() => setFilter('past')}
+        />
+      </ScrollView>
       <FlatList
         testID={testIds.myTickets.list}
-        data={data}
+        data={items}
         keyExtractor={(t) => t.id}
-        contentContainerStyle={{ padding: theme.spacing.md, gap: theme.spacing.md }}
+        contentContainerStyle={
+          items.length === 0
+            ? styles.emptyContent
+            : { padding: theme.spacing.md, gap: theme.spacing.md }
+        }
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
         renderItem={({ item }) => (
           <Pressable
@@ -84,8 +119,43 @@ export function MyTicketsListScreen() {
             </Card>
           </Pressable>
         )}
+        ListEmptyComponent={
+          <View style={styles.center} testID={testIds.myTickets.emptyState}>
+            <Text style={styles.heading}>{t('myTickets.heading')}</Text>
+            <Text style={styles.muted}>
+              {filter === 'all'
+                ? t('myTickets.placeholder')
+                : `No ${filter} tickets.`}
+            </Text>
+          </View>
+        }
       />
     </View>
+  );
+}
+
+function Chip({
+  label,
+  selected,
+  onPress,
+  testID,
+}: {
+  label: string;
+  selected: boolean;
+  onPress: () => void;
+  testID?: string;
+}) {
+  return (
+    <Pressable
+      testID={testID}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected }}
+      onPress={onPress}
+      style={[styles.chip, selected && styles.chipSelected]}
+    >
+      <Text style={[styles.chipText, selected && styles.chipTextSelected]}>{label}</Text>
+    </Pressable>
   );
 }
 
@@ -99,10 +169,33 @@ const styles = StyleSheet.create({
     gap: theme.spacing.sm,
     backgroundColor: theme.colors.background,
   },
+  emptyContent: { flexGrow: 1 },
   heading: { fontSize: theme.typography.heading, fontWeight: '700', color: theme.colors.text },
   muted: { color: theme.colors.muted, fontSize: theme.typography.body, textAlign: 'center' },
   error: { color: theme.colors.danger, fontSize: theme.typography.body },
   cardTitle: { fontSize: theme.typography.title, fontWeight: '600', color: theme.colors.text },
   cardMeta: { fontSize: theme.typography.caption, color: theme.colors.muted, marginTop: 4 },
   status: { color: theme.colors.text, fontWeight: '600' },
+  chipScroll: {
+    maxHeight: 56,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: theme.colors.border,
+  },
+  chipRow: {
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    gap: theme.spacing.sm,
+    alignItems: 'center',
+  },
+  chip: {
+    paddingVertical: theme.spacing.xs + 2,
+    paddingHorizontal: theme.spacing.md,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.surface,
+  },
+  chipSelected: { backgroundColor: theme.colors.primary, borderColor: theme.colors.primary },
+  chipText: { fontSize: theme.typography.body, color: theme.colors.text },
+  chipTextSelected: { color: theme.colors.primaryText, fontWeight: '600' },
 });

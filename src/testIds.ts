@@ -48,6 +48,8 @@ export const testIds = {
     screen: 'screen.myTickets',
     list: 'myTickets.list',
     item: (id: string) => `myTickets.item.${id}`,
+    filterChip: (slug: string) => `myTickets.filterChip.${slug}`,
+    emptyState: 'myTickets.emptyState',
   },
   ticketDetail: {
     screen: 'screen.ticketDetail',
