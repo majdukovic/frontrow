@@ -129,6 +129,8 @@ export const testIds = {
     title: 'eventDetail.title',
     buyButton: 'eventDetail.buyButton',
     favoriteButton: 'eventDetail.favoriteButton',
+    shareButton: 'eventDetail.shareButton',
+    reviewsButton: 'eventDetail.reviewsButton',
   },
   settings: {
     screen: 'screen.settings',

@@ -1,4 +1,13 @@
-import { ScrollView, View, Text, Image, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  Image,
+  Pressable,
+  Share,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type {
   NativeStackNavigationProp,
@@ -57,6 +66,20 @@ export function EventDetailScreen({ route }: Props) {
           >
             {event.title}
           </Text>
+          <Pressable
+            testID={testIds.eventDetail.shareButton}
+            accessibilityRole="button"
+            accessibilityLabel="Share event"
+            onPress={() =>
+              void Share.share({
+                message: `${event.title} — ${event.artist} at ${event.venue.name}\nfrontrow://events/${event.id}`,
+              })
+            }
+            hitSlop={12}
+            style={styles.heart}
+          >
+            <Ionicons name="share-outline" size={26} color={theme.colors.text} />
+          </Pressable>
           {isSignedIn ? (
             <Pressable
               testID={testIds.eventDetail.favoriteButton}
@@ -92,7 +115,7 @@ export function EventDetailScreen({ route }: Props) {
             onPress={() => nav.navigate('BuyTicket', { eventId: event.id })}
           />
           <Button
-            testID="eventDetail.reviewsButton"
+            testID={testIds.eventDetail.reviewsButton}
             title="Reviews"
             variant="secondary"
             onPress={() => nav.navigate('EventReviews', { eventId: event.id })}
