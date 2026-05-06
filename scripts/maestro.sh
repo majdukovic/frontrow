@@ -27,7 +27,9 @@ if [[ "$PLATFORM" != "android" && "$PLATFORM" != "ios" ]]; then
 fi
 
 cleanup_daemon() {
-  pkill -9 -f maestro 2>/dev/null || true
+  # Kill the JVM running Maestro's CLI, not anything else with
+  # "maestro" in the path (this script qualifies, oops).
+  pkill -9 -f "maestro.cli.AppKt" 2>/dev/null || true
   sleep 2
 }
 
