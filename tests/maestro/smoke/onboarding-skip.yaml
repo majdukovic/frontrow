@@ -1,0 +1,29 @@
+# Trigger onboarding then bail with the Skip button.
+appId: app.frontrow.qa
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 60000
+
+- tapOn:
+    id: 'tab.debug'
+- scrollUntilVisible:
+    element:
+      id: 'debug.replayOnboardingButton'
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    id: 'debug.replayOnboardingButton'
+
+- assertVisible:
+    id: 'screen.onboarding'
+- tapOn:
+    id: 'onboarding.skipButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 10000

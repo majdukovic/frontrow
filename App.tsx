@@ -16,14 +16,16 @@ import { useBillingStore } from './src/state/billing';
 import { useSettingsStore } from './src/state/settings';
 import { useDeepLinkScenario } from './src/hooks/useDeepLinkScenario';
 import { ToastHost } from './src/components/ToastHost';
+import { OnboardingScreen } from './src/screens/OnboardingScreen';
 import { theme } from './src/theme';
 
 function AppShell() {
   useDeepLinkScenario();
   useQaInvalidation();
+  const onboardingPending = useSettingsStore((s) => s.onboardingPending);
   return (
     <NavigationContainer linking={linking}>
-      <RootNavigator />
+      {onboardingPending ? <OnboardingScreen /> : <RootNavigator />}
       <ToastHost />
       <StatusBar style="auto" />
     </NavigationContainer>

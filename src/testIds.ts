@@ -6,6 +6,14 @@ export const testIds = {
   app: {
     root: 'app.root',
   },
+  onboarding: {
+    screen: 'screen.onboarding',
+    skipButton: 'onboarding.skipButton',
+    nextButton: 'onboarding.nextButton',
+    getStartedButton: 'onboarding.getStartedButton',
+    page: (n: number) => `onboarding.page.${n}`,
+    dot: (n: number) => `onboarding.dot.${n}`,
+  },
   tab: {
     events: 'tab.events',
     myTickets: 'tab.myTickets',
@@ -87,6 +95,7 @@ export const testIds = {
     fakePushButton: 'debug.fakePushButton',
     forceErrorToggle: 'debug.forceErrorToggle',
     crashButton: 'debug.crashButton',
+    replayOnboardingButton: 'debug.replayOnboardingButton',
   },
   eventDetail: {
     screen: 'screen.eventDetail',

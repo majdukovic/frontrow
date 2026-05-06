@@ -21,6 +21,8 @@ platform:
 executionOrder:
   flowsOrder:
     - smoke/launch
+    - smoke/onboarding-complete
+    - smoke/onboarding-skip
     - events/browse
     - events/pagination
     - auth/login

@@ -1,0 +1,44 @@
+# Trigger onboarding from the debug menu, swipe through every page, finish.
+appId: app.frontrow.qa
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 60000
+
+- tapOn:
+    id: 'tab.debug'
+- assertVisible:
+    id: 'screen.debug'
+- scrollUntilVisible:
+    element:
+      id: 'debug.replayOnboardingButton'
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    id: 'debug.replayOnboardingButton'
+
+- assertVisible:
+    id: 'screen.onboarding'
+- assertVisible:
+    id: 'onboarding.page.0'
+
+- tapOn:
+    id: 'onboarding.nextButton'
+- assertVisible:
+    id: 'onboarding.page.1'
+
+- tapOn:
+    id: 'onboarding.nextButton'
+- assertVisible:
+    id: 'onboarding.page.2'
+
+- tapOn:
+    id: 'onboarding.getStartedButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 10000

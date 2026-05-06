@@ -12,6 +12,7 @@ import { useQaStore } from '../state/qa';
 import { useAuthStore } from '../state/auth';
 import { useAnalyticsStore } from '../state/analytics';
 import { useBillingStore, type PurchaseOutcome } from '../state/billing';
+import { useSettingsStore } from '../state/settings';
 import { scenarios, type ScenarioId } from '../mocks/seed/scenarios/registry';
 import { resetMockState } from '../mocks/state';
 import { getBuildInfo } from '../utils/buildInfo';
@@ -230,6 +231,14 @@ export function DebugScreen() {
       <Section title="Notifications & crashes">
         <Row testID={testIds.debug.fakePushButton} label="Fire fake push" onPress={fakePush} />
         <Row testID={testIds.debug.crashButton} label="Trigger crash" onPress={crash} />
+      </Section>
+
+      <Section title="First-run">
+        <Row
+          testID={testIds.debug.replayOnboardingButton}
+          label="Replay onboarding"
+          onPress={() => void useSettingsStore.getState().startOnboarding()}
+        />
       </Section>
 
       <Section title="In-app purchases">
