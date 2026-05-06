@@ -68,6 +68,20 @@ describe('events.listEvents', () => {
   });
 });
 
+describe('events.listEvents past-event filter', () => {
+  it('hides events whose startsAt is in the past by default', async () => {
+    // evt_006 (Last Train Home) is seeded as 2025-11-15. Real now() is well
+    // past that — it should be filtered out of the listing.
+    const page = await listEvents();
+    expect(page.items.find((e) => e.id === 'evt_006')).toBeUndefined();
+  });
+
+  it('returns past events when includePast is true', async () => {
+    const page = await listEvents({ includePast: true });
+    expect(page.items.find((e) => e.id === 'evt_006')).toBeDefined();
+  });
+});
+
 describe('events.getEvent', () => {
   it('returns the event by id', async () => {
     const e = await getEvent('evt_001');

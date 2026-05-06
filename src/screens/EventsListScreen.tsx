@@ -104,7 +104,9 @@ export function EventsListScreen() {
         <TextInput
           testID={testIds.events.searchInput}
           accessibilityLabel="Search events"
-          placeholder={t('events.searchPlaceholder')}
+          placeholder={t('events.searchPlaceholder', {
+            defaultValue: 'Search shows, artists, cities…',
+          })}
           value={q}
           onChangeText={setQ}
           style={[styles.searchInput, { flex: 1 }]}

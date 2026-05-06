@@ -1,5 +1,6 @@
 import { applyQaDelay, applyQaForcedError, ApiClientError } from '../client';
 import { mockState } from '../../mocks/state';
+import { now } from '../../state/qa';
 import type { Event } from '../types';
 
 export type EventSort = 'date_asc' | 'date_desc' | 'price_asc' | 'price_desc';
@@ -8,6 +9,13 @@ export type EventFilters = {
   q?: string;
   genre?: string;
   sort?: EventSort;
+  /**
+   * Include events whose `startsAt` is in the past. Default false — the
+   * Events tab is for upcoming shows only. Past events are still
+   * retrievable via getEvent() so a purchased ticket from a past show
+   * still resolves on the ticket detail screen.
+   */
+  includePast?: boolean;
 };
 
 export type EventsPage = {
@@ -30,6 +38,10 @@ export async function listEvents(
   const q = filters.q?.toLowerCase();
   const genre = filters.genre?.toLowerCase();
   let results = [...mockState.events];
+  if (!filters.includePast) {
+    const cutoff = now().getTime();
+    results = results.filter((e) => new Date(e.startsAt).getTime() >= cutoff);
+  }
   if (q) {
     results = results.filter(
       (e) =>
