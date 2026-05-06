@@ -1,0 +1,79 @@
+# Add, mark default, delete a saved payment method.
+appId: app.frontrow.qa
+---
+- runFlow: ../auth/login.yaml
+
+- tapOn:
+    id: 'tab.profile'
+- tapOn: 'profile.settingsButton'
+- assertVisible:
+    id: 'screen.settings'
+
+- tapOn:
+    id: 'settings.paymentMethodsRow'
+- assertVisible:
+    id: 'screen.paymentMethods'
+
+# Demo seed has pm_001 as the default Visa.
+- assertVisible:
+    id: 'paymentMethods.item.pm_001'
+- assertVisible:
+    id: 'paymentMethods.defaultBadge.pm_001'
+
+# Add a second card.
+- tapOn:
+    id: 'paymentMethods.addButton'
+- assertVisible:
+    id: 'screen.addPaymentMethod'
+
+- tapOn:
+    id: 'addPaymentMethod.cardholderInput'
+- inputText: 'Test Cardholder'
+
+- tapOn:
+    id: 'addPaymentMethod.numberInput'
+- inputText: '4111111111111111'
+
+- tapOn:
+    id: 'addPaymentMethod.expMonthInput'
+- inputText: '12'
+
+- tapOn:
+    id: 'addPaymentMethod.expYearInput'
+- inputText: '2030'
+
+- tapOn:
+    id: 'addPaymentMethod.cvcInput'
+- inputText: '123'
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - hideKeyboard
+
+- tapOn:
+    id: 'addPaymentMethod.submitButton'
+- assertVisible: 'Card added'
+
+# Back on the list, the new card should appear (id pm_101 is the next slot).
+- assertVisible:
+    id: 'screen.paymentMethods'
+- assertVisible:
+    id: 'paymentMethods.item.pm_101'
+
+# Promote the new card to default.
+- tapOn:
+    id: 'paymentMethods.setDefault.pm_101'
+- assertVisible: 'Default card updated'
+- assertVisible:
+    id: 'paymentMethods.defaultBadge.pm_101'
+- assertNotVisible:
+    id: 'paymentMethods.defaultBadge.pm_001'
+
+# Delete the new card via the native confirm dialog.
+- tapOn:
+    id: 'paymentMethods.delete.pm_101'
+- tapOn: 'Delete'
+- assertVisible: 'Card removed'
+- assertNotVisible:
+    id: 'paymentMethods.item.pm_101'

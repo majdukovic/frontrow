@@ -1,5 +1,5 @@
 import { seed } from './seed';
-import type { Event, Review, Ticket, User } from '../api/types';
+import type { Event, PaymentMethod, Review, Ticket, User } from '../api/types';
 
 type SeedUser = User & { password: string };
 
@@ -37,11 +37,26 @@ const seedReviews: Review[] = [
  * In-memory state for the mock backend. Survives a session, gets re-seeded
  * by the QA Debug Menu via `applyScenario`.
  */
+const seedPaymentMethods: PaymentMethod[] = [
+  {
+    id: 'pm_001',
+    userId: 'usr_demo',
+    brand: 'visa',
+    last4: '4242',
+    expMonth: 12,
+    expYear: 2030,
+    cardholder: 'Demo User',
+    isDefault: true,
+    createdAt: '2025-12-01T10:00:00.000Z',
+  },
+];
+
 export const mockState = {
   events: [...seed.events] as Event[],
   users: [...seed.users] as SeedUser[],
   tickets: [...seed.tickets] as Ticket[],
   reviews: [...seedReviews] as Review[],
+  paymentMethods: [...seedPaymentMethods] as PaymentMethod[],
   sessions: new Map<string, string>(), // token -> userId
 };
 
@@ -56,4 +71,5 @@ export function resetMockState(): void {
   mockState.users = [...seed.users];
   mockState.tickets = [...seed.tickets];
   mockState.reviews = [...seedReviews];
+  mockState.paymentMethods = [...seedPaymentMethods];
 }

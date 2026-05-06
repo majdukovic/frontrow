@@ -42,6 +42,14 @@ export function SettingsScreen() {
         />
       </Section>
 
+      <Section title="Billing">
+        <Row
+          testID={testIds.settings.paymentMethodsRow}
+          label="Payment methods"
+          onPress={() => nav.navigate('PaymentMethods')}
+        />
+      </Section>
+
       <Section title="About">
         <Row
           testID={testIds.settings.aboutRow}

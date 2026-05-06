@@ -23,6 +23,8 @@ export type ProfileStackParamList = {
   Language: undefined;
   About: undefined;
   WebView: { url: string; title: string };
+  PaymentMethods: undefined;
+  AddPaymentMethod: undefined;
 };
 
 export type DebugStackParamList = {

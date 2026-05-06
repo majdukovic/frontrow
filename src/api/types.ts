@@ -64,6 +64,20 @@ export type Review = {
   createdAt: string;
 };
 
+export type CardBrand = 'visa' | 'mastercard' | 'amex' | 'discover' | 'unknown';
+
+export type PaymentMethod = {
+  id: string;
+  userId: string;
+  brand: CardBrand;
+  last4: string;
+  expMonth: number;
+  expYear: number;
+  cardholder: string;
+  isDefault: boolean;
+  createdAt: string;
+};
+
 export type ApiError = {
   code: string;
   message: string;

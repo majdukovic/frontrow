@@ -33,6 +33,7 @@ executionOrder:
     - events/reviews
     - billing/buy-success
     - billing/buy-decline
+    - billing/payment-methods-crud
     - debug/scenario-deep-link
     - debug/force-error
     - capabilities/haptic

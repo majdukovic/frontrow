@@ -20,6 +20,8 @@ import { SettingsScreen } from '../screens/settings/SettingsScreen';
 import { LanguageScreen } from '../screens/settings/LanguageScreen';
 import { AboutScreen } from '../screens/settings/AboutScreen';
 import { WebViewScreen } from '../screens/settings/WebViewScreen';
+import { PaymentMethodsScreen } from '../screens/settings/PaymentMethodsScreen';
+import { AddPaymentMethodScreen } from '../screens/settings/AddPaymentMethodScreen';
 import { DebugScreen } from '../screens/DebugScreen';
 import { HapticDemo } from '../screens/capabilities/HapticDemo';
 import { LocationDemo } from '../screens/capabilities/LocationDemo';
@@ -131,6 +133,16 @@ function ProfileNavigator() {
         name="WebView"
         component={WebViewScreen}
         options={{ title: 'WebView' }}
+      />
+      <ProfileStack.Screen
+        name="PaymentMethods"
+        component={PaymentMethodsScreen}
+        options={{ title: 'Payment methods' }}
+      />
+      <ProfileStack.Screen
+        name="AddPaymentMethod"
+        component={AddPaymentMethodScreen}
+        options={{ title: 'Add card', presentation: 'modal' }}
       />
     </ProfileStack.Navigator>
   );
