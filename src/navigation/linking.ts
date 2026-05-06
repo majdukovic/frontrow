@@ -23,6 +23,9 @@ export const linking: LinkingOptions<RootTabParamList> = {
         screens: {
           ProfileHome: 'profile',
           Login: 'profile/login',
+          ForgotPassword: 'profile/forgot-password',
+          Otp: 'profile/otp',
+          ResetPassword: 'profile/reset-password',
           Premium: 'profile/premium',
         },
       },

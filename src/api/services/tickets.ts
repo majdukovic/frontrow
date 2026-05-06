@@ -58,6 +58,49 @@ export async function purchaseTicket(
   return ticket;
 }
 
+export type PromoCodeResult = {
+  code: string;
+  discountCents: number;
+  percentOff: number;
+};
+
+export async function applyPromoCode(input: {
+  eventId: string;
+  code: string;
+}): Promise<PromoCodeResult> {
+  await applyQaDelay();
+  applyQaForcedError();
+  const code = input.code.trim().toUpperCase();
+  const event = mockState.events.find((e) => e.id === input.eventId);
+  if (!event) {
+    throw new ApiClientError(404, { code: 'not_found', message: 'Event not found.' });
+  }
+  const codeMap: Record<string, number> = {
+    FRONTROW10: 10,
+    FRONTROW25: 25,
+    FRONTROW50: 50,
+    FREE: 100,
+  };
+  if (code === 'EXPIRED') {
+    throw new ApiClientError(410, {
+      code: 'expired_promo',
+      message: 'This promo code has expired.',
+    });
+  }
+  const percentOff = codeMap[code];
+  if (percentOff == null) {
+    throw new ApiClientError(404, {
+      code: 'invalid_promo',
+      message: 'Promo code is invalid.',
+    });
+  }
+  return {
+    code,
+    percentOff,
+    discountCents: Math.round((event.priceCents * percentOff) / 100),
+  };
+}
+
 export async function cancelTicket(token: string | null, ticketId: string): Promise<Ticket> {
   await applyQaDelay();
   applyQaForcedError();

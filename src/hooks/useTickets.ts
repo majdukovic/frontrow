@@ -1,6 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { listMyTickets, purchaseTicket, cancelTicket } from '../api/services/tickets';
+import {
+  listMyTickets,
+  purchaseTicket,
+  cancelTicket,
+  applyPromoCode,
+} from '../api/services/tickets';
 import { useAuthStore } from '../state/auth';
 import { track } from '../state/analytics';
 
@@ -28,6 +33,18 @@ export function usePurchaseTicket() {
     onError: (err) => {
       track('ticket.purchase.failure', { message: (err as Error).message });
     },
+  });
+}
+
+export function useApplyPromoCode() {
+  return useMutation({
+    mutationFn: (input: { eventId: string; code: string }) => {
+      track('promo.apply.attempt', input);
+      return applyPromoCode(input);
+    },
+    onSuccess: (res) =>
+      track('promo.apply.success', { code: res.code, percentOff: res.percentOff }),
+    onError: (err) => track('promo.apply.failure', { message: (err as Error).message }),
   });
 }
 
