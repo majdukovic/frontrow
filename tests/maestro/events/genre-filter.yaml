@@ -1,0 +1,31 @@
+# Filter the events list by genre via the chip row.
+appId: app.frontrow.qa
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 60000
+
+# Default view shows the indie rock seed evt_001.
+- assertVisible:
+    id: 'events.item.evt_001'
+
+# Switch to Classical → only evt_002 (Aurora Symphony) should remain.
+- tapOn:
+    id: 'events.filterChip.classical'
+- extendedWaitUntil:
+    visible:
+      id: 'events.item.evt_002'
+    timeout: 5000
+- assertNotVisible:
+    id: 'events.item.evt_001'
+
+# Reset back to All.
+- tapOn:
+    id: 'events.filterChip.all'
+- assertVisible:
+    id: 'events.item.evt_001'
+- assertVisible:
+    id: 'events.item.evt_002'
