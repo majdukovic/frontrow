@@ -12,6 +12,11 @@ appId: app.frontrow.qa
 - tapOn:
     id: 'events.searchInput'
 - inputText: 'Aurora'
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - hideKeyboard
 - extendedWaitUntil:
     visible:
       id: 'events.item.evt_002'
@@ -21,13 +26,17 @@ appId: app.frontrow.qa
 - tapOn:
     id: 'events.searchInput'
 - eraseText
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - hideKeyboard
 - extendedWaitUntil:
     visible:
       id: 'events.item.evt_001'
     timeout: 10000
 
-# Open detail. Wait for animation to settle on iOS where the keyboard
-# focus transition can defer the tap by a frame or two.
+# Open detail
 - tapOn:
     id: 'events.item.evt_001'
 - waitForAnimationToEnd:

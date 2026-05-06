@@ -1,4 +1,4 @@
-import { Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -130,9 +130,11 @@ function DebugNavigator() {
   );
 }
 
-function tabIcon(emoji: string) {
-  function TabIcon({ focused }: { focused: boolean }) {
-    return <Text style={{ fontSize: 22, opacity: focused ? 1 : 0.55 }}>{emoji}</Text>;
+type IoniconName = keyof typeof Ionicons.glyphMap;
+
+function tabIcon(name: IoniconName, focusedName?: IoniconName) {
+  function TabIcon({ focused, color }: { focused: boolean; color: string }) {
+    return <Ionicons name={focused ? (focusedName ?? name) : name} size={24} color={color} />;
   }
   return TabIcon;
 }
@@ -150,7 +152,7 @@ export function RootNavigator() {
         name="Events"
         component={EventsNavigator}
         options={{
-          tabBarIcon: tabIcon('🎵'),
+          tabBarIcon: tabIcon('musical-notes-outline', 'musical-notes'),
           tabBarAccessibilityLabel: 'Events tab',
           tabBarButtonTestID: 'tab.events',
         }}
@@ -160,7 +162,7 @@ export function RootNavigator() {
         component={TicketsNavigator}
         options={{
           title: 'My Tickets',
-          tabBarIcon: tabIcon('🎫'),
+          tabBarIcon: tabIcon('ticket-outline', 'ticket'),
           tabBarAccessibilityLabel: 'My Tickets tab',
           tabBarButtonTestID: 'tab.myTickets',
         }}
@@ -169,7 +171,7 @@ export function RootNavigator() {
         name="Profile"
         component={ProfileNavigator}
         options={{
-          tabBarIcon: tabIcon('👤'),
+          tabBarIcon: tabIcon('person-outline', 'person'),
           tabBarAccessibilityLabel: 'Profile tab',
           tabBarButtonTestID: 'tab.profile',
         }}
@@ -178,7 +180,7 @@ export function RootNavigator() {
         name="Debug"
         component={DebugNavigator}
         options={{
-          tabBarIcon: tabIcon('🐞'),
+          tabBarIcon: tabIcon('bug-outline', 'bug'),
           tabBarAccessibilityLabel: 'Debug tab',
           tabBarButtonTestID: 'tab.debug',
         }}
