@@ -1,0 +1,39 @@
+# Sign in, open an event, post a 5-star review and confirm it appears.
+appId: app.frontrow.qa
+---
+- runFlow: ../auth/login.yaml
+
+- tapOn:
+    id: 'tab.events'
+- assertVisible:
+    id: 'screen.events'
+- tapOn:
+    id: 'events.item.evt_001'
+- extendedWaitUntil:
+    visible:
+      id: 'screen.eventDetail'
+    timeout: 10000
+
+- tapOn:
+    id: 'eventDetail.reviewsButton'
+- assertVisible:
+    id: 'screen.reviews'
+
+# 5-star rating
+- tapOn:
+    id: 'reviews.ratingInput.star.5'
+
+# Review text
+- tapOn:
+    id: 'reviews.textInput'
+- inputText: 'Incredible show, vocals were on fire!'
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - hideKeyboard
+
+- tapOn:
+    id: 'reviews.submitButton'
+
+- assertVisible: 'Incredible show, vocals were on fire!'

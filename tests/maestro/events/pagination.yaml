@@ -1,0 +1,40 @@
+# Apply many_events scenario, scroll the events list to the end, assert end-of-list.
+appId: app.frontrow.qa
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 60000
+
+# Seed 200+ events for the list-perf scenario.
+- openLink: 'frontrow://debug/seed/many_events'
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+
+- tapOn:
+    id: 'tab.events'
+- assertVisible:
+    id: 'screen.events'
+- assertVisible:
+    id: 'events.list'
+
+# Repeated swipes pull additional pages until the footer marker appears.
+- repeat:
+    times: 25
+    commands:
+      - swipe:
+          from:
+            id: 'events.list'
+          direction: UP
+      - waitForAnimationToEnd:
+          timeout: 1500
+
+- extendedWaitUntil:
+    visible:
+      id: 'events.endOfList'
+    timeout: 30000

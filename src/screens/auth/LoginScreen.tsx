@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { theme } from '../../theme';
 import { testIds } from '../../testIds';
 import { Button } from '../../components/Button';
 import { useLogin } from '../../hooks/useAuth';
+import type { ProfileStackParamList } from '../../navigation/types';
 
 export function LoginScreen() {
-  const nav = useNavigation();
+  const nav = useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const [email, setEmail] = useState('demo@frontrow.app');
   const [password, setPassword] = useState('demo1234');
   const { mutateAsync, isPending } = useLogin();
@@ -52,6 +54,14 @@ export function LoginScreen() {
         onPress={onSubmit}
         loading={isPending}
       />
+      <Pressable
+        testID={testIds.login.forgotPasswordLink}
+        accessibilityRole="link"
+        onPress={() => nav.navigate('ForgotPassword')}
+        hitSlop={8}
+      >
+        <Text style={styles.link}>Forgot password?</Text>
+      </Pressable>
       <Text style={styles.hint}>Demo: demo@frontrow.app / demo1234</Text>
     </View>
   );
@@ -77,6 +87,12 @@ const styles = StyleSheet.create({
     padding: theme.spacing.md,
     fontSize: theme.typography.body,
     color: theme.colors.text,
+  },
+  link: {
+    fontSize: theme.typography.body,
+    color: theme.colors.primary,
+    textAlign: 'center',
+    paddingVertical: theme.spacing.xs,
   },
   hint: {
     fontSize: theme.typography.caption,
