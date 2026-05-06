@@ -31,12 +31,18 @@ export async function markNotificationRead(
   await applyQaDelay();
   applyQaForcedError();
   const userId = requireUser(token);
-  const target = mockState.notifications.find((n) => n.id === id && n.userId === userId);
-  if (!target) {
+  const idx = mockState.notifications.findIndex((n) => n.id === id && n.userId === userId);
+  if (idx === -1) {
     throw new ApiClientError(404, { code: 'not_found', message: 'Notification not found.' });
   }
-  if (!target.readAt) target.readAt = now().toISOString();
-  return target;
+  // Replace with a fresh object so React Query's structural sharing sees a
+  // changed reference and the unread count re-derives.
+  const updated: AppNotification = {
+    ...mockState.notifications[idx]!,
+    readAt: mockState.notifications[idx]!.readAt ?? now().toISOString(),
+  };
+  mockState.notifications[idx] = updated;
+  return updated;
 }
 
 export async function markAllNotificationsRead(token: string | null): Promise<void> {
@@ -44,7 +50,7 @@ export async function markAllNotificationsRead(token: string | null): Promise<vo
   applyQaForcedError();
   const userId = requireUser(token);
   const stamp = now().toISOString();
-  for (const n of mockState.notifications) {
-    if (n.userId === userId && !n.readAt) n.readAt = stamp;
-  }
+  mockState.notifications = mockState.notifications.map((n) =>
+    n.userId === userId && !n.readAt ? { ...n, readAt: stamp } : n,
+  );
 }
