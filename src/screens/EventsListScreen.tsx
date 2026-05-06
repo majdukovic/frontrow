@@ -4,6 +4,8 @@ import {
   Text,
   TextInput,
   FlatList,
+  Pressable,
+  ScrollView,
   ActivityIndicator,
   RefreshControl,
   StyleSheet,
@@ -18,10 +20,13 @@ import { useEvents } from '../hooks/useEvents';
 import { EventListItem } from '../components/EventListItem';
 import type { EventsStackParamList } from '../navigation/types';
 
+const GENRES = ['Indie Rock', 'Classical', 'Electronic', 'Folk', 'J-Pop', 'Punk'] as const;
+
 export function EventsListScreen() {
   const { t } = useTranslation();
   const nav = useNavigation<NativeStackNavigationProp<EventsStackParamList>>();
   const [q, setQ] = useState('');
+  const [genre, setGenre] = useState<string | null>(null);
   const {
     data,
     isLoading,
@@ -31,7 +36,7 @@ export function EventsListScreen() {
     hasNextPage,
     isFetchingNextPage,
     error,
-  } = useEvents({ q: q || undefined });
+  } = useEvents({ q: q || undefined, genre: genre ?? undefined });
 
   const items = useMemo(() => data?.pages.flatMap((p) => p.items) ?? [], [data]);
   const total = data?.pages[0]?.total ?? 0;
@@ -50,6 +55,29 @@ export function EventsListScreen() {
           autoCorrect={false}
         />
       </View>
+      <ScrollView
+        testID={testIds.events.filterRow}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.chipRow}
+        contentContainerStyle={styles.chipRowContent}
+      >
+        <Chip
+          testID={testIds.events.filterChip('all')}
+          label="All"
+          selected={genre == null}
+          onPress={() => setGenre(null)}
+        />
+        {GENRES.map((g) => (
+          <Chip
+            key={g}
+            testID={testIds.events.filterChip(g.toLowerCase().replace(/\s+/g, '-'))}
+            label={g}
+            selected={genre === g}
+            onPress={() => setGenre(genre === g ? null : g)}
+          />
+        ))}
+      </ScrollView>
       {isLoading ? (
         <View style={styles.center}>
           <ActivityIndicator />
@@ -101,6 +129,31 @@ export function EventsListScreen() {
   );
 }
 
+function Chip({
+  label,
+  selected,
+  onPress,
+  testID,
+}: {
+  label: string;
+  selected: boolean;
+  onPress: () => void;
+  testID?: string;
+}) {
+  return (
+    <Pressable
+      testID={testID}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected }}
+      onPress={onPress}
+      style={[styles.chip, selected && styles.chipSelected]}
+    >
+      <Text style={[styles.chipText, selected && styles.chipTextSelected]}>{label}</Text>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background },
   searchBar: {
@@ -125,4 +178,26 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.caption,
     paddingVertical: theme.spacing.lg,
   },
+  chipRow: {
+    maxHeight: 56,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: theme.colors.border,
+  },
+  chipRowContent: {
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    gap: theme.spacing.sm,
+    alignItems: 'center',
+  },
+  chip: {
+    paddingVertical: theme.spacing.xs + 2,
+    paddingHorizontal: theme.spacing.md,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.surface,
+  },
+  chipSelected: { backgroundColor: theme.colors.primary, borderColor: theme.colors.primary },
+  chipText: { fontSize: theme.typography.body, color: theme.colors.text },
+  chipTextSelected: { color: theme.colors.primaryText, fontWeight: '600' },
 });

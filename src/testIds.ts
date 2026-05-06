@@ -18,6 +18,8 @@ export const testIds = {
     item: (id: string) => `events.item.${id}`,
     searchInput: 'events.searchInput',
     filterButton: 'events.filterButton',
+    filterRow: 'events.filterRow',
+    filterChip: (slug: string) => `events.filterChip.${slug}`,
     errorMessage: 'events.errorMessage',
     loadingFooter: 'events.loadingFooter',
     endOfList: 'events.endOfList',
