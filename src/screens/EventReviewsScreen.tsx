@@ -1,5 +1,13 @@
 import { useLayoutEffect, useState } from 'react';
-import { View, Text, TextInput, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  ActivityIndicator,
+  RefreshControl,
+  StyleSheet,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -21,7 +29,7 @@ export function EventReviewsScreen({ route }: Props) {
   const [rating, setRating] = useState<0 | 1 | 2 | 3 | 4 | 5>(0);
   const [text, setText] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const { data, isLoading, refetch } = useReviewsForEvent(eventId);
+  const { data, isLoading, isRefetching, refetch } = useReviewsForEvent(eventId);
   const { mutateAsync, isPending } = usePostReview(eventId);
   const isSignedIn = Boolean(useAuthStore((s) => s.token));
 
@@ -50,6 +58,7 @@ export function EventReviewsScreen({ route }: Props) {
       testID={testIds.reviews.list}
       data={data ?? []}
       keyExtractor={(r) => r.id}
+      refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
       ListHeaderComponent={
         <View style={styles.formBlock}>
           <Text style={styles.heading} accessibilityRole="header">
@@ -110,8 +119,6 @@ export function EventReviewsScreen({ route }: Props) {
         )
       }
       ItemSeparatorComponent={() => <View style={styles.separator} />}
-      onRefresh={refetch}
-      refreshing={isLoading}
       contentContainerStyle={styles.content}
       style={{ backgroundColor: theme.colors.background }}
     />
