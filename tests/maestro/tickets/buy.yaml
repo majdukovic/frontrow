@@ -19,7 +19,7 @@ appId: app.frontrow.qa
 - tapOn:
     id: 'buyTicket.payButton'
 
-- tapOn: 'OK'
+- assertVisible: 'Ticket purchased'
 
 - tapOn:
     id: 'tab.myTickets'
