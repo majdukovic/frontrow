@@ -28,6 +28,7 @@ executionOrder:
     - auth/login
     - auth/forgotPassword
     - auth/edit-profile
+    - auth/language-switch
     - tickets/buy
     - tickets/detail-cancel
     - tickets/transfer

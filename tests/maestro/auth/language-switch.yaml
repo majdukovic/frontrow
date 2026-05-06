@@ -1,0 +1,34 @@
+# Switch the app locale through Settings → Language and confirm a
+# translated label appears on the events tab.
+appId: app.frontrow.qa
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 60000
+
+- tapOn:
+    id: 'tab.profile'
+- tapOn: 'profile.settingsButton'
+- assertVisible:
+    id: 'screen.settings'
+
+- tapOn:
+    id: 'settings.languageRow'
+- assertVisible:
+    id: 'screen.settings.language'
+
+# Switch to Japanese.
+- tapOn:
+    id: 'settings.language.ja'
+
+- assertVisible:
+    id: 'screen.settings'
+
+# Switch back to English so subsequent flows see the default copy.
+- tapOn:
+    id: 'settings.languageRow'
+- tapOn:
+    id: 'settings.language.en'
