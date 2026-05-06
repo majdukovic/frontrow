@@ -16,7 +16,7 @@ export function usePostReview(eventId: string) {
   const token = useAuthStore((s) => s.token);
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (input: { rating: 1 | 2 | 3 | 4 | 5; text: string }) => {
+    mutationFn: (input: { rating: 1 | 2 | 3 | 4 | 5; text: string; imageUri?: string }) => {
       track('review.post.attempt', { eventId, rating: input.rating });
       return postReview(token, { eventId, ...input });
     },

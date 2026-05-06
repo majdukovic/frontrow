@@ -1,0 +1,37 @@
+# Open an event, return to the list, confirm it appears in the
+# Recently Viewed strip.
+appId: app.frontrow.qa
+---
+- launchApp:
+    clearState: true
+- openLink: 'frontrow://debug/reset'
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 60000
+
+# Strip is hidden when no events have been viewed yet.
+- assertNotVisible:
+    id: 'events.recentlyViewedStrip'
+
+- tapOn:
+    id: 'events.item.evt_001'
+- extendedWaitUntil:
+    visible:
+      id: 'screen.eventDetail'
+    timeout: 10000
+- back
+
+# evt_001 should now show in the strip.
+- extendedWaitUntil:
+    visible:
+      id: 'events.recentlyViewedStrip'
+    timeout: 5000
+- assertVisible:
+    id: 'events.recentlyViewedItem.evt_001'
+
+# Tapping the strip item navigates back to detail.
+- tapOn:
+    id: 'events.recentlyViewedItem.evt_001'
+- assertVisible:
+    id: 'screen.eventDetail'

@@ -1,0 +1,22 @@
+# Open an event that ships with a refund policy and assert the block renders.
+appId: app.frontrow.qa
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 60000
+
+# Demo seed: evt_001 (Midnight Howl) ships with a refundableUntil + note.
+- tapOn:
+    id: 'events.item.evt_001'
+- extendedWaitUntil:
+    visible:
+      id: 'screen.eventDetail'
+    timeout: 10000
+
+- assertVisible:
+    id: 'eventDetail.refundPolicy'
+- assertVisible: 'Refund policy'
+- assertVisible: 'Refundable until'

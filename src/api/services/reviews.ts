@@ -32,7 +32,7 @@ function requireUser(token: string | null): string {
 
 export async function postReview(
   token: string | null,
-  input: { eventId: string; rating: 1 | 2 | 3 | 4 | 5; text: string },
+  input: { eventId: string; rating: 1 | 2 | 3 | 4 | 5; text: string; imageUri?: string },
 ): Promise<Review> {
   await applyQaDelay();
   applyQaForcedError();
@@ -62,6 +62,7 @@ export async function postReview(
     authorName: author?.displayName ?? 'You',
     rating: input.rating,
     text: trimmed,
+    imageUri: input.imageUri,
     createdAt: now().toISOString(),
   };
   mockState.reviews.push(review);

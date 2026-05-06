@@ -3,6 +3,8 @@ import {
   View,
   Text,
   TextInput,
+  Image,
+  Pressable,
   FlatList,
   ActivityIndicator,
   RefreshControl,
@@ -10,6 +12,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
 
 import { theme } from '../theme';
 import { testIds } from '../testIds';
@@ -28,6 +32,8 @@ export function EventReviewsScreen({ route }: Props) {
   const nav = useNavigation();
   const [rating, setRating] = useState<0 | 1 | 2 | 3 | 4 | 5>(0);
   const [text, setText] = useState('');
+  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [permissionDenied, setPermissionDenied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { data, isLoading, isRefetching, refetch } = useReviewsForEvent(eventId);
   const { mutateAsync, isPending } = usePostReview(eventId);
@@ -45,12 +51,34 @@ export function EventReviewsScreen({ route }: Props) {
     setError(null);
     if (rating === 0 || overLimit) return;
     try {
-      await mutateAsync({ rating: rating as 1 | 2 | 3 | 4 | 5, text });
+      await mutateAsync({
+        rating: rating as 1 | 2 | 3 | 4 | 5,
+        text,
+        imageUri: imageUri ?? undefined,
+      });
       setRating(0);
       setText('');
+      setImageUri(null);
     } catch (e) {
       setError((e as Error).message);
     }
+  };
+
+  const onPickImage = async () => {
+    setPermissionDenied(false);
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) {
+      setPermissionDenied(true);
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 0.7,
+      allowsEditing: true,
+    });
+    if (result.canceled) return;
+    const first = result.assets?.[0];
+    if (first?.uri) setImageUri(first.uri);
   };
 
   return (
@@ -90,6 +118,41 @@ export function EventReviewsScreen({ route }: Props) {
                   {remaining} characters left
                 </Text>
               </View>
+              {imageUri ? (
+                <View style={styles.previewBlock}>
+                  <Image
+                    testID={testIds.reviews.imagePreview}
+                    source={{ uri: imageUri }}
+                    style={styles.previewImage}
+                    accessibilityLabel="Selected review photo preview"
+                  />
+                  <Pressable
+                    testID={testIds.reviews.removeImageButton}
+                    accessibilityRole="button"
+                    accessibilityLabel="Remove photo"
+                    onPress={() => setImageUri(null)}
+                    style={styles.previewRemove}
+                  >
+                    <Ionicons name="close" size={16} color={theme.colors.primaryText} />
+                  </Pressable>
+                </View>
+              ) : (
+                <Pressable
+                  testID={testIds.reviews.pickImageButton}
+                  accessibilityRole="button"
+                  accessibilityLabel="Attach a photo"
+                  onPress={() => void onPickImage()}
+                  style={styles.pickButton}
+                >
+                  <Ionicons name="image-outline" size={18} color={theme.colors.primary} />
+                  <Text style={styles.pickButtonText}>Attach photo</Text>
+                </Pressable>
+              )}
+              {permissionDenied ? (
+                <Text testID={testIds.reviews.permissionDenied} style={styles.errorText}>
+                  Photo library access denied. Enable it in Settings to attach a photo.
+                </Text>
+              ) : null}
               {error && (
                 <Text testID={testIds.reviews.errorMessage} style={styles.errorText}>
                   {error}
@@ -132,7 +195,15 @@ function ReviewRow({ review }: { review: Review }) {
         <Text style={styles.author}>{review.authorName}</Text>
         <StarRatingInput value={review.rating} interactive={false} size={16} />
       </View>
-      <Text style={styles.body}>{review.text}</Text>
+      {review.text ? <Text style={styles.body}>{review.text}</Text> : null}
+      {review.imageUri ? (
+        <Image
+          testID={testIds.reviews.itemImage(review.id)}
+          source={{ uri: review.imageUri }}
+          style={styles.attachedImage}
+          accessibilityLabel="Photo attached to review"
+        />
+      ) : null}
       <Text style={styles.timestamp}>{relativeTime(review.createdAt)}</Text>
     </View>
   );
@@ -180,4 +251,42 @@ const styles = StyleSheet.create({
   body: { fontSize: theme.typography.body, color: theme.colors.text },
   timestamp: { fontSize: theme.typography.caption, color: theme.colors.muted },
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: theme.colors.border },
+  pickButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+    alignSelf: 'flex-start',
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: theme.radius.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.surface,
+  },
+  pickButtonText: { fontSize: theme.typography.body, color: theme.colors.primary, fontWeight: '600' },
+  previewBlock: { position: 'relative', alignSelf: 'flex-start' },
+  previewImage: {
+    width: 120,
+    height: 120,
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.surface,
+  },
+  previewRemove: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: theme.colors.text,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  attachedImage: {
+    width: '100%',
+    aspectRatio: 4 / 3,
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.surface,
+    marginTop: theme.spacing.xs,
+  },
 });

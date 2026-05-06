@@ -1,0 +1,78 @@
+# Smoke runner on Maestro Cloud — short five-flow loop to gate PRs.
+#
+# This workflow assumes a `MAESTRO_CLOUD_API_KEY` secret is configured in
+# the repo's GitHub Actions secrets. Without that key the workflow won't
+# run; add the key from https://console.mobile.dev/ to enable.
+#
+# We deliberately do not run the full Maestro suite here — that lives in
+# `maestro-android.yml` and runs nightly. The smoke loop is intended to
+# fail fast on PRs and only covers the five release-gating paths.
+name: Maestro Cloud — Smoke
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Target platform'
+        type: choice
+        options:
+          - android
+          - ios
+        default: android
+
+jobs:
+  android-smoke:
+    if: ${{ github.event_name == 'pull_request' || github.event.inputs.platform == 'android' }}
+    name: Android smoke (Maestro Cloud)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Skip when API key is missing
+        id: gate
+        run: |
+          if [ -z "${{ secrets.MAESTRO_CLOUD_API_KEY }}" ]; then
+            echo "MAESTRO_CLOUD_API_KEY not set — skipping cloud smoke" >&2
+            echo "ran=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "ran=true" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v4
+        if: steps.gate.outputs.ran == 'true'
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.ran == 'true'
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install JS deps
+        if: steps.gate.outputs.ran == 'true'
+        run: npm ci
+
+      - name: Build release APK
+        if: steps.gate.outputs.ran == 'true'
+        run: ./android/gradlew -p android assembleRelease
+
+      - name: Run smoke flows on Maestro Cloud
+        if: steps.gate.outputs.ran == 'true'
+        uses: mobile-dev-inc/action-maestro-cloud@v1
+        with:
+          api-key: ${{ secrets.MAESTRO_CLOUD_API_KEY }}
+          app-file: android/app/build/outputs/apk/release/app-release.apk
+          # Allowlist mirrors scripts/smoke.sh so the cloud + local
+          # smoke runs assert the same five paths.
+          include-tags: smoke
+          workspace: tests/maestro
+          flows: |
+            tests/maestro/smoke/launch.yaml
+            tests/maestro/events/browse.yaml
+            tests/maestro/auth/login.yaml
+            tests/maestro/tickets/buy.yaml
+            tests/maestro/tickets/detail-cancel.yaml

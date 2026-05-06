@@ -83,6 +83,7 @@ export type Review = {
   authorName: string;
   rating: 1 | 2 | 3 | 4 | 5;
   text: string;
+  imageUri?: string;
   createdAt: string;
 };
 

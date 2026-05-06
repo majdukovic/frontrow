@@ -1,0 +1,27 @@
+# 808 Heatwave Festival ships with a four-act lineup. Open it and
+# assert the block + the headliner row.
+appId: app.frontrow.qa
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 60000
+
+# evt_003 is sold out — drive via deep link instead of tapping a chip.
+- openLink: 'frontrow://events/evt_003'
+- extendedWaitUntil:
+    visible:
+      id: 'screen.eventDetail'
+    timeout: 10000
+
+- assertVisible:
+    id: 'eventDetail.lineup'
+- assertVisible: 'Lineup'
+- assertVisible: 'Neon Drift'
+- assertVisible: 'Aurora Symphony'
+- assertVisible:
+    id: 'eventDetail.lineupItem.0'
+- assertVisible:
+    id: 'eventDetail.lineupItem.3'

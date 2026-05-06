@@ -26,6 +26,9 @@ executionOrder:
     - events/browse
     - events/genre-filter
     - events/sort
+    - events/recently-viewed
+    - events/refund-policy
+    - events/lineup
     - events/pagination
     - auth/login
     - auth/forgotPassword
