@@ -1,11 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { listEvents, getEvent, type EventFilters } from '../api/services/events';
 
 export function useEvents(filters: EventFilters = {}) {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ['events', filters],
-    queryFn: () => listEvents(filters),
+    queryFn: ({ pageParam = 0 }) => listEvents(filters, pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (last) => (last.hasMore ? last.page + 1 : undefined),
   });
 }
 

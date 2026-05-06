@@ -9,6 +9,7 @@ import { Button } from '../components/Button';
 import { useEvent } from '../hooks/useEvents';
 import { useApplyPromoCode, usePurchaseTicket } from '../hooks/useTickets';
 import { useAuthStore } from '../state/auth';
+import { showToast } from '../state/toasts';
 import { formatPrice } from '../utils/format';
 import type { EventsStackParamList } from '../navigation/types';
 import type { PromoCodeResult } from '../api/services/tickets';
@@ -58,9 +59,9 @@ export function BuyTicketScreen({ route }: Props) {
     try {
       await mutateAsync({ eventId: event.id, quantity: qty });
       nav.goBack();
-      Alert.alert('Success', 'Ticket purchased.');
+      showToast('Ticket purchased', 'success');
     } catch (e) {
-      Alert.alert('Purchase failed', (e as Error).message);
+      showToast((e as Error).message, 'error', 4000);
     }
   };
 

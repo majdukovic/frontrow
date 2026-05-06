@@ -19,6 +19,8 @@ export const testIds = {
     searchInput: 'events.searchInput',
     filterButton: 'events.filterButton',
     errorMessage: 'events.errorMessage',
+    loadingFooter: 'events.loadingFooter',
+    endOfList: 'events.endOfList',
   },
   myTickets: {
     screen: 'screen.myTickets',

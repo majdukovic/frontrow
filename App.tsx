@@ -15,6 +15,7 @@ import { useQaStore } from './src/state/qa';
 import { useBillingStore } from './src/state/billing';
 import { useSettingsStore } from './src/state/settings';
 import { useDeepLinkScenario } from './src/hooks/useDeepLinkScenario';
+import { ToastHost } from './src/components/ToastHost';
 import { theme } from './src/theme';
 
 function AppShell() {
@@ -23,6 +24,7 @@ function AppShell() {
   return (
     <NavigationContainer linking={linking}>
       <RootNavigator />
+      <ToastHost />
       <StatusBar style="auto" />
     </NavigationContainer>
   );

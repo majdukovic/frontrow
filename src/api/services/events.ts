@@ -7,7 +7,21 @@ export type EventFilters = {
   genre?: string;
 };
 
-export async function listEvents(filters: EventFilters = {}): Promise<Event[]> {
+export type EventsPage = {
+  items: Event[];
+  page: number;
+  pageSize: number;
+  total: number;
+  hasMore: boolean;
+};
+
+export const EVENTS_PAGE_SIZE = 20;
+
+export async function listEvents(
+  filters: EventFilters = {},
+  page = 0,
+  pageSize: number = EVENTS_PAGE_SIZE,
+): Promise<EventsPage> {
   await applyQaDelay();
   applyQaForcedError();
   const q = filters.q?.toLowerCase();
@@ -24,7 +38,16 @@ export async function listEvents(filters: EventFilters = {}): Promise<Event[]> {
   if (genre) {
     results = results.filter((e) => e.genre.toLowerCase() === genre);
   }
-  return results;
+  const total = results.length;
+  const start = page * pageSize;
+  const items = results.slice(start, start + pageSize);
+  return {
+    items,
+    page,
+    pageSize,
+    total,
+    hasMore: start + items.length < total,
+  };
 }
 
 export async function getEvent(id: string): Promise<Event> {
