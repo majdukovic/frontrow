@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import { theme } from '../../theme';
 import { testIds } from '../../testIds';
@@ -7,6 +8,7 @@ import { Button } from '../../components/Button';
 import { useLogin } from '../../hooks/useAuth';
 
 export function LoginScreen() {
+  const nav = useNavigation();
   const [email, setEmail] = useState('demo@frontrow.app');
   const [password, setPassword] = useState('demo1234');
   const { mutateAsync, isPending } = useLogin();
@@ -14,18 +16,19 @@ export function LoginScreen() {
   const onSubmit = async () => {
     try {
       await mutateAsync({ email: email.trim(), password });
+      if (nav.canGoBack()) nav.goBack();
     } catch (e) {
       Alert.alert('Sign in failed', (e as Error).message);
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID={testIds.login.screen}>
       <Text style={styles.heading} accessibilityRole="header">
         Sign in
       </Text>
       <TextInput
-        testID="login.emailInput"
+        testID={testIds.login.emailInput}
         accessibilityLabel="Email"
         value={email}
         onChangeText={setEmail}
@@ -35,7 +38,7 @@ export function LoginScreen() {
         style={styles.input}
       />
       <TextInput
-        testID="login.passwordInput"
+        testID={testIds.login.passwordInput}
         accessibilityLabel="Password"
         value={password}
         onChangeText={setPassword}
@@ -44,7 +47,7 @@ export function LoginScreen() {
         style={styles.input}
       />
       <Button
-        testID={testIds.profile.signInButton}
+        testID={testIds.login.submitButton}
         title={isPending ? 'Signing in…' : 'Sign in'}
         onPress={onSubmit}
         loading={isPending}

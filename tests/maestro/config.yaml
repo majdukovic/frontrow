@@ -1,0 +1,13 @@
+flows:
+  - '**/*.yaml'
+executionOrder:
+  flowsOrder:
+    - smoke/launch
+    - events/browse
+    - auth/login
+    - tickets/buy
+    - billing/buy-success
+    - billing/buy-decline
+    - debug/scenario-deep-link
+    - debug/force-error
+    - capabilities/haptic

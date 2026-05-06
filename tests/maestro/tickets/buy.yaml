@@ -3,7 +3,8 @@ appId: app.frontrow.qa
 ---
 - runFlow: ../auth/login.yaml
 
-- tapOn: 'Events'
+- tapOn:
+    id: 'tab.events'
 - assertVisible:
     id: 'screen.events'
 - tapOn:
@@ -20,6 +21,7 @@ appId: app.frontrow.qa
 
 - tapOn: 'OK'
 
-- tapOn: 'My Tickets'
+- tapOn:
+    id: 'tab.myTickets'
 - assertVisible:
     id: 'screen.myTickets'

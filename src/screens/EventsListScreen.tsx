@@ -44,7 +44,9 @@ export function EventsListScreen() {
         </View>
       ) : error ? (
         <View style={styles.center}>
-          <Text style={styles.error}>Failed to load events.</Text>
+          <Text testID={testIds.events.errorMessage} style={styles.error}>
+            Failed to load events.
+          </Text>
         </View>
       ) : (
         <FlatList

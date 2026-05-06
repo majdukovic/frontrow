@@ -6,12 +6,19 @@ export const testIds = {
   app: {
     root: 'app.root',
   },
+  tab: {
+    events: 'tab.events',
+    myTickets: 'tab.myTickets',
+    profile: 'tab.profile',
+    debug: 'tab.debug',
+  },
   events: {
     screen: 'screen.events',
     list: 'events.list',
     item: (id: string) => `events.item.${id}`,
     searchInput: 'events.searchInput',
     filterButton: 'events.filterButton',
+    errorMessage: 'events.errorMessage',
   },
   myTickets: {
     screen: 'screen.myTickets',
@@ -23,6 +30,12 @@ export const testIds = {
     avatar: 'profile.avatar',
     signInButton: 'profile.signInButton',
     signOutButton: 'profile.signOutButton',
+  },
+  login: {
+    screen: 'screen.login',
+    emailInput: 'login.emailInput',
+    passwordInput: 'login.passwordInput',
+    submitButton: 'login.submitButton',
   },
   debug: {
     screen: 'screen.debug',

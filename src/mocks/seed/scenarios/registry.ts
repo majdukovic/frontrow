@@ -33,6 +33,7 @@ export const scenarios: Record<ScenarioId, Scenario> = {
     apply() {
       resetMockState();
       mockState.tickets = [];
+      // Empty state explicitly signs everyone out.
       mockState.sessions.clear();
     },
   },

@@ -10,8 +10,13 @@ appId: app.frontrow.qa
 # Apply expired_tickets via debug deep link
 - openLink: 'frontrow://debug/seed/expired_tickets'
 
-# Open My Tickets and verify the status shows used (past)
-- tapOn: 'My Tickets'
+# Open My Tickets and verify the status shows used on every ticket.
+- tapOn:
+    id: 'tab.myTickets'
 - assertVisible:
     id: 'screen.myTickets'
-- assertVisible: 'used'
+- assertVisible:
+    id: 'myTickets.item.tkt_001'
+- assertVisible:
+    id: 'myTickets.item.tkt_002'
+- assertNotVisible: 'active'

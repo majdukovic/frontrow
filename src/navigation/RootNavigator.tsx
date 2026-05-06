@@ -1,5 +1,8 @@
+import { Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { theme } from '../theme';
 
 import { EventsListScreen } from '../screens/EventsListScreen';
 import { EventDetailScreen } from '../screens/EventDetailScreen';
@@ -127,13 +130,59 @@ function DebugNavigator() {
   );
 }
 
+function tabIcon(emoji: string) {
+  function TabIcon({ focused }: { focused: boolean }) {
+    return <Text style={{ fontSize: 22, opacity: focused ? 1 : 0.55 }}>{emoji}</Text>;
+  }
+  return TabIcon;
+}
+
 export function RootNavigator() {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
-      <Tab.Screen name="Events" component={EventsNavigator} />
-      <Tab.Screen name="MyTickets" component={TicketsNavigator} options={{ title: 'My Tickets' }} />
-      <Tab.Screen name="Profile" component={ProfileNavigator} />
-      <Tab.Screen name="Debug" component={DebugNavigator} />
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.muted,
+      }}
+    >
+      <Tab.Screen
+        name="Events"
+        component={EventsNavigator}
+        options={{
+          tabBarIcon: tabIcon('🎵'),
+          tabBarAccessibilityLabel: 'Events tab',
+          tabBarButtonTestID: 'tab.events',
+        }}
+      />
+      <Tab.Screen
+        name="MyTickets"
+        component={TicketsNavigator}
+        options={{
+          title: 'My Tickets',
+          tabBarIcon: tabIcon('🎫'),
+          tabBarAccessibilityLabel: 'My Tickets tab',
+          tabBarButtonTestID: 'tab.myTickets',
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileNavigator}
+        options={{
+          tabBarIcon: tabIcon('👤'),
+          tabBarAccessibilityLabel: 'Profile tab',
+          tabBarButtonTestID: 'tab.profile',
+        }}
+      />
+      <Tab.Screen
+        name="Debug"
+        component={DebugNavigator}
+        options={{
+          tabBarIcon: tabIcon('🐞'),
+          tabBarAccessibilityLabel: 'Debug tab',
+          tabBarButtonTestID: 'tab.debug',
+        }}
+      />
     </Tab.Navigator>
   );
 }

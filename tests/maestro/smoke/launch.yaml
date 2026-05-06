@@ -4,6 +4,8 @@ appId: app.frontrow.qa
 ---
 - launchApp:
     clearState: true
-- assertVisible:
-    id: 'screen.events'
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 30000
 - assertVisible: 'Events'

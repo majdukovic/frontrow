@@ -59,7 +59,9 @@ export function MyTicketsListScreen() {
             <Text style={styles.cardMeta}>Purchased {formatEventDate(item.purchasedAt)}</Text>
             <Text style={styles.cardMeta}>
               {item.quantity} × · {formatPrice(item.totalCents, item.currency)} ·{' '}
-              <Text style={styles.status}>{item.status}</Text>
+              <Text testID={`myTickets.status.${item.id}`} style={styles.status}>
+                {item.status}
+              </Text>
             </Text>
           </Card>
         )}

@@ -4,7 +4,8 @@ appId: app.frontrow.qa
 - launchApp:
     clearState: true
 
-- tapOn: 'Debug'
+- tapOn:
+    id: 'tab.debug'
 - assertVisible:
     id: 'screen.debug'
 

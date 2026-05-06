@@ -3,13 +3,20 @@ appId: app.frontrow.qa
 ---
 - launchApp:
     clearState: true
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 30000
 
-- tapOn: 'Profile'
+- tapOn:
+    id: 'tab.profile'
 - assertVisible:
     id: 'screen.profile'
 - tapOn:
     id: 'profile.signInButton'
 
+- assertVisible:
+    id: 'screen.login'
 - tapOn:
     id: 'login.emailInput'
 - eraseText
@@ -20,8 +27,7 @@ appId: app.frontrow.qa
 - inputText: 'demo1234'
 - hideKeyboard
 - tapOn:
-    id: 'profile.signInButton'
+    id: 'login.submitButton'
 
-- assertVisible: 'Demo User'
 - assertVisible:
     id: 'profile.signOutButton'

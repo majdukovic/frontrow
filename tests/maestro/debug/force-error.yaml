@@ -3,12 +3,25 @@ appId: app.frontrow.qa
 ---
 - launchApp:
     clearState: true
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 30000
 
-- tapOn: 'Debug'
+- tapOn:
+    id: 'tab.debug'
 - assertVisible:
     id: 'screen.debug'
+- scrollUntilVisible:
+    element:
+      id: 'debug.forceError.5xx'
+    direction: DOWN
 - tapOn:
     id: 'debug.forceError.5xx'
 
-- tapOn: 'Events'
-- assertVisible: 'Failed to load events'
+- tapOn:
+    id: 'tab.events'
+- extendedWaitUntil:
+    visible:
+      id: 'events.errorMessage'
+    timeout: 10000

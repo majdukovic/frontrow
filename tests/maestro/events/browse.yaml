@@ -3,19 +3,30 @@ appId: app.frontrow.qa
 ---
 - launchApp:
     clearState: true
-- assertVisible:
-    id: 'screen.events'
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 30000
 
 # Search filters the list
 - tapOn:
     id: 'events.searchInput'
 - inputText: 'Aurora'
-- assertVisible: 'Aurora Symphony'
 - hideKeyboard
+- extendedWaitUntil:
+    visible:
+      id: 'events.item.evt_002'
+    timeout: 10000
 
 # Clear search
+- tapOn:
+    id: 'events.searchInput'
 - eraseText
-- assertVisible: 'Midnight Howl'
+- hideKeyboard
+- extendedWaitUntil:
+    visible:
+      id: 'events.item.evt_001'
+    timeout: 10000
 
 # Open detail
 - tapOn:

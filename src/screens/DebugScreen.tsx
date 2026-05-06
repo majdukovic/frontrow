@@ -181,7 +181,10 @@ export function DebugScreen() {
                 key={m.value}
                 title={m.label}
                 variant={qa.forceError === m.value ? 'primary' : 'secondary'}
-                onPress={() => void qa.setForceError(m.value)}
+                onPress={() => {
+                  void qa.setForceError(m.value);
+                  void qc.invalidateQueries();
+                }}
                 testID={m.value === 'none' ? undefined : `debug.forceError.${m.value}`}
               />
             ))}
@@ -194,7 +197,10 @@ export function DebugScreen() {
                 key={ms}
                 title={ms === 0 ? 'Off' : `${ms}ms`}
                 variant={qa.networkDelayMs === ms ? 'primary' : 'secondary'}
-                onPress={() => void qa.setNetworkDelayMs(ms)}
+                onPress={() => {
+                  void qa.setNetworkDelayMs(ms);
+                  void qc.invalidateQueries();
+                }}
               />
             ))}
           </View>

@@ -3,17 +3,21 @@ appId: app.frontrow.qa
 ---
 - runFlow: ../auth/login.yaml
 
-- tapOn: 'Debug'
+- tapOn:
+    id: 'tab.debug'
 - assertVisible:
     id: 'screen.debug'
 - scrollUntilVisible:
     element:
       id: 'debug.iap.decline'
     direction: DOWN
+    timeout: 30000
+    speed: 30
 - tapOn:
     id: 'debug.iap.decline'
 
-- tapOn: 'Profile'
+- tapOn:
+    id: 'tab.profile'
 - tapOn:
     id: 'profile.premiumButton'
 - assertVisible:

@@ -3,7 +3,8 @@ appId: app.frontrow.qa
 ---
 - runFlow: ../auth/login.yaml
 
-- tapOn: 'Profile'
+- tapOn:
+    id: 'tab.profile'
 - assertVisible:
     id: 'screen.profile'
 - tapOn:

@@ -1,4 +1,4 @@
-import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 
 import { theme } from '../theme';
 import { testIds } from '../testIds';
@@ -10,7 +10,26 @@ type Props = {
   onPress: (event: Event) => void;
 };
 
+const TILE_COLORS = [
+  '#FFB4B4',
+  '#FFD580',
+  '#B5E5FC',
+  '#C4F0C5',
+  '#E2BBFF',
+  '#FFC1E3',
+  '#FFD8B1',
+  '#B7E4C7',
+];
+
+function colorFor(seed: string): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i += 1) h = (h * 31 + seed.charCodeAt(i)) | 0;
+  return TILE_COLORS[Math.abs(h) % TILE_COLORS.length] ?? TILE_COLORS[0]!;
+}
+
 export function EventListItem({ event, onPress }: Props) {
+  const tileColor = colorFor(event.id);
+  const initial = event.title.charAt(0).toUpperCase();
   return (
     <Pressable
       testID={testIds.events.item(event.id)}
@@ -19,7 +38,9 @@ export function EventListItem({ event, onPress }: Props) {
       onPress={() => onPress(event)}
       style={({ pressed }) => [styles.row, pressed && { opacity: 0.85 }]}
     >
-      <Image source={{ uri: event.imageUrl }} style={styles.image} accessible={false} />
+      <View style={[styles.image, { backgroundColor: tileColor }]} accessible={false}>
+        <Text style={styles.imageInitial}>{initial}</Text>
+      </View>
       <View style={styles.body}>
         <Text style={styles.title} numberOfLines={1}>
           {event.title}
@@ -49,8 +70,10 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  imageInitial: { fontSize: 32, fontWeight: '700', color: 'rgba(0,0,0,0.55)' },
   body: { flex: 1, marginLeft: theme.spacing.md, justifyContent: 'space-between' },
   title: { fontSize: theme.typography.title, fontWeight: '700', color: theme.colors.text },
   subtitle: { fontSize: theme.typography.caption, color: theme.colors.muted },

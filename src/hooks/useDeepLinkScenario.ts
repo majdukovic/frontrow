@@ -21,9 +21,12 @@ export function useDeepLinkScenario(): void {
   useEffect(() => {
     const handle = (url: string | null) => {
       if (!url) return;
+      // `frontrow://debug/seed/<id>` parses with hostname="debug" and
+      // path="seed/<id>" via expo-linking. Match against a normalized
+      // "<host>/<path>" string so we don't depend on the parser's split.
       const parsed = Linking.parse(url);
-      const path = parsed.path ?? '';
-      const m = /^debug\/seed\/([\w-]+)$/.exec(path);
+      const segments = [parsed.hostname, parsed.path].filter(Boolean).join('/');
+      const m = /(?:^|\/)debug\/seed\/([\w-]+)$/.exec(segments);
       if (!m) return;
       const id = m[1] as ScenarioId;
       const scenario = scenarios[id];
