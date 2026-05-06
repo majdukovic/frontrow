@@ -1,7 +1,10 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import type { ReactNode } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
 import { theme } from '../theme';
+
+type IoniconName = keyof typeof Ionicons.glyphMap;
 
 type Props = {
   label: string;
@@ -11,6 +14,7 @@ type Props = {
   onPress?: () => void;
   testID?: string;
   accessibilityLabel?: string;
+  icon?: IoniconName;
 };
 
 export function Row({
@@ -21,9 +25,15 @@ export function Row({
   onPress,
   testID,
   accessibilityLabel,
+  icon,
 }: Props) {
   const top = (
     <View style={styles.top}>
+      {icon ? (
+        <View style={styles.iconBox}>
+          <Ionicons name={icon} size={20} color={theme.colors.text} />
+        </View>
+      ) : null}
       <Text style={styles.label} numberOfLines={1}>
         {label}
       </Text>
@@ -32,6 +42,14 @@ export function Row({
           {value}
         </Text>
       )}
+      {onPress && !trailing ? (
+        <Ionicons
+          name="chevron-forward"
+          size={18}
+          color={theme.colors.muted}
+          style={styles.chevron}
+        />
+      ) : null}
       {trailing}
     </View>
   );
@@ -80,6 +98,13 @@ const styles = StyleSheet.create({
     minHeight: 32,
     gap: theme.spacing.sm,
   },
+  iconBox: {
+    width: 28,
+    height: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   label: { flex: 1, fontSize: theme.typography.body, color: theme.colors.text },
   value: { fontSize: theme.typography.body, color: theme.colors.muted },
+  chevron: { marginLeft: theme.spacing.xs },
 });

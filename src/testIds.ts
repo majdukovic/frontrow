@@ -36,6 +36,7 @@ export const testIds = {
     inboxButton: 'events.inboxButton',
     inboxBadge: 'events.inboxBadge',
     skeleton: 'events.skeleton',
+    heroCard: 'events.heroCard',
   },
   inbox: {
     screen: 'screen.inbox',

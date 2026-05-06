@@ -23,8 +23,10 @@ import { useUnreadNotificationCount } from '../hooks/useNotifications';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { useAuthStore } from '../state/auth';
 import { Button } from '../components/Button';
+import { EmptyState } from '../components/EmptyState';
 import { EventListItem } from '../components/EventListItem';
 import { EventListSkeleton } from '../components/EventListSkeleton';
+import { HeroEventCard } from '../components/HeroEventCard';
 import type { EventsStackParamList } from '../navigation/types';
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -59,6 +61,7 @@ export function EventsListScreen() {
   }, [allItems, favoritesOnly, favIds]);
   const total = data?.pages[0]?.total ?? 0;
   const unreadCount = useUnreadNotificationCount();
+  const showHero = !debouncedQ && genre == null && !favoritesOnly && items.length > 1;
 
   useLayoutEffect(() => {
     nav.setOptions({
@@ -148,8 +151,16 @@ export function EventsListScreen() {
       ) : (
         <FlatList
           testID={testIds.events.list}
-          data={items}
+          data={showHero ? items.slice(1) : items}
           keyExtractor={(e) => e.id}
+          ListHeaderComponent={
+            showHero && items[0] ? (
+              <HeroEventCard
+                event={items[0]}
+                onPress={(e) => nav.navigate('EventDetail', { id: e.id })}
+              />
+            ) : null
+          }
           renderItem={({ item }) => (
             <EventListItem
               event={item}
@@ -157,9 +168,11 @@ export function EventsListScreen() {
             />
           )}
           ListEmptyComponent={
-            <View style={styles.center}>
-              <Text style={styles.muted}>No events match your search.</Text>
-            </View>
+            <EmptyState
+              icon="search-outline"
+              title="No events found"
+              body="Try a different search term or clear the filters above."
+            />
           }
           ListFooterComponent={
             isFetchingNextPage ? (

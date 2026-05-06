@@ -1,59 +1,67 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 
 import { theme } from '../theme';
 import { testIds } from '../testIds';
 import type { Event } from '../api/types';
-import { formatPrice, formatEventDate } from '../utils/format';
+import { formatPrice, formatDateShort, formatTimeShort } from '../utils/format';
 
 type Props = {
   event: Event;
   onPress: (event: Event) => void;
 };
 
-const TILE_COLORS = [
-  '#FFB4B4',
-  '#FFD580',
-  '#B5E5FC',
-  '#C4F0C5',
-  '#E2BBFF',
-  '#FFC1E3',
-  '#FFD8B1',
-  '#B7E4C7',
-];
-
-function colorFor(seed: string): string {
-  let h = 0;
-  for (let i = 0; i < seed.length; i += 1) h = (h * 31 + seed.charCodeAt(i)) | 0;
-  return TILE_COLORS[Math.abs(h) % TILE_COLORS.length] ?? TILE_COLORS[0]!;
-}
+const GENRE_HUE: Record<string, string> = {
+  'indie rock': '#FFB4B4',
+  classical: '#C7B7FF',
+  electronic: '#9BD9FF',
+  folk: '#C4F0C5',
+  'j-pop': '#FFC1E3',
+  punk: '#FFD580',
+};
 
 export function EventListItem({ event, onPress }: Props) {
-  const tileColor = colorFor(event.id);
-  const initial = event.title.charAt(0).toUpperCase();
+  const genreColor = GENRE_HUE[event.genre.toLowerCase()] ?? '#E5E5EA';
   return (
     <Pressable
       testID={testIds.events.item(event.id)}
       accessibilityRole="button"
       accessibilityLabel={`${event.title} at ${event.venue.name}`}
       onPress={() => onPress(event)}
-      style={({ pressed }) => [styles.row, pressed && { opacity: 0.85 }]}
+      style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
     >
-      <View style={[styles.image, { backgroundColor: tileColor }]} accessible={false}>
-        <Text style={styles.imageInitial}>{initial}</Text>
-      </View>
+      <Image source={{ uri: event.imageUrl }} style={styles.image} accessible={false} />
       <View style={styles.body}>
-        <Text style={styles.title} numberOfLines={1}>
-          {event.title}
+        <View style={styles.titleRow}>
+          <Text style={styles.title} numberOfLines={1}>
+            {event.title}
+          </Text>
+        </View>
+        <Text style={styles.artist} numberOfLines={1}>
+          {event.artist}
         </Text>
-        <Text style={styles.subtitle} numberOfLines={1}>
+        <Text style={styles.venue} numberOfLines={1}>
           {event.venue.name} · {event.venue.city}
         </Text>
         <View style={styles.footer}>
-          <Text style={styles.date}>{formatEventDate(event.startsAt)}</Text>
-          <Text style={[styles.price, event.soldOut && styles.soldOut]}>
-            {event.soldOut ? 'Sold out' : formatPrice(event.priceCents, event.currency)}
+          <View style={[styles.genreChip, { backgroundColor: genreColor }]}>
+            <Text style={styles.genreText}>{event.genre}</Text>
+          </View>
+          <Text style={styles.date}>
+            {formatDateShort(event.startsAt)} · {formatTimeShort(event.startsAt)}
           </Text>
         </View>
+      </View>
+      <View style={styles.priceCol}>
+        {event.soldOut ? (
+          <View style={styles.soldOutChip}>
+            <Text style={styles.soldOutText}>Sold out</Text>
+          </View>
+        ) : (
+          <>
+            <Text style={styles.priceFrom}>from</Text>
+            <Text style={styles.price}>{formatPrice(event.priceCents, event.currency)}</Text>
+          </>
+        )}
       </View>
     </Pressable>
   );
@@ -63,22 +71,49 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     padding: theme.spacing.md,
+    gap: theme.spacing.md,
+    backgroundColor: theme.colors.background,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: theme.colors.border,
   },
+  rowPressed: { opacity: 0.7 },
   image: {
-    width: 80,
-    height: 80,
+    width: 88,
+    height: 88,
     borderRadius: theme.radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: theme.colors.surface,
   },
-  imageInitial: { fontSize: 32, fontWeight: '700', color: 'rgba(0,0,0,0.55)' },
-  body: { flex: 1, marginLeft: theme.spacing.md, justifyContent: 'space-between' },
-  title: { fontSize: theme.typography.title, fontWeight: '700', color: theme.colors.text },
-  subtitle: { fontSize: theme.typography.caption, color: theme.colors.muted },
-  footer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  date: { fontSize: theme.typography.caption, color: theme.colors.muted },
-  price: { fontSize: theme.typography.body, fontWeight: '600', color: theme.colors.primary },
-  soldOut: { color: theme.colors.danger },
+  body: { flex: 1, justifyContent: 'space-between' },
+  titleRow: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing.sm },
+  title: { flex: 1, fontSize: theme.typography.title, fontWeight: '700', color: theme.colors.text },
+  artist: { fontSize: theme.typography.body, color: theme.colors.text, marginTop: 2 },
+  venue: { fontSize: theme.typography.caption, color: theme.colors.muted, marginTop: 2 },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+    marginTop: theme.spacing.xs,
+  },
+  genreChip: {
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: 2,
+    borderRadius: 999,
+  },
+  genreText: { fontSize: 11, fontWeight: '600', color: 'rgba(0,0,0,0.7)' },
+  date: { fontSize: theme.typography.caption, color: theme.colors.muted, flex: 1 },
+  priceCol: { alignItems: 'flex-end', justifyContent: 'center', minWidth: 60 },
+  priceFrom: { fontSize: 10, color: theme.colors.muted, textTransform: 'uppercase' },
+  price: { fontSize: theme.typography.title, fontWeight: '700', color: theme.colors.primary },
+  soldOutChip: {
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: 4,
+    borderRadius: theme.radius.sm,
+    backgroundColor: theme.colors.danger,
+  },
+  soldOutText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: theme.colors.primaryText,
+    textTransform: 'uppercase',
+  },
 });

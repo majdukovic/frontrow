@@ -16,6 +16,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { theme } from '../theme';
 import { testIds } from '../testIds';
 import { Card } from '../components/Card';
+import { EmptyState } from '../components/EmptyState';
 import { useMyTickets } from '../hooks/useTickets';
 import { useAuthStore } from '../state/auth';
 import { formatPrice, formatEventDate } from '../utils/format';
@@ -42,8 +43,12 @@ export function MyTicketsListScreen() {
 
   if (!token) {
     return (
-      <View style={styles.center} testID={testIds.myTickets.screen}>
-        <Text style={styles.muted}>Sign in to see your tickets.</Text>
+      <View style={{ flex: 1 }} testID={testIds.myTickets.screen}>
+        <EmptyState
+          icon="ticket-outline"
+          title="Sign in to see tickets"
+          body="Your purchased tickets will live here once you have an account."
+        />
       </View>
     );
   }
@@ -120,14 +125,12 @@ export function MyTicketsListScreen() {
           </Pressable>
         )}
         ListEmptyComponent={
-          <View style={styles.center} testID={testIds.myTickets.emptyState}>
-            <Text style={styles.heading}>{t('myTickets.heading')}</Text>
-            <Text style={styles.muted}>
-              {filter === 'all'
-                ? t('myTickets.placeholder')
-                : `No ${filter} tickets.`}
-            </Text>
-          </View>
+          <EmptyState
+            testID={testIds.myTickets.emptyState}
+            icon="ticket-outline"
+            title={t('myTickets.heading')}
+            body={filter === 'all' ? t('myTickets.placeholder') : `No ${filter} tickets.`}
+          />
         }
       />
     </View>

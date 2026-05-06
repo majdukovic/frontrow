@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { theme } from '../theme';
 import { testIds } from '../testIds';
+import { EmptyState } from '../components/EmptyState';
 import {
   useNotifications,
   useMarkNotificationRead,
@@ -115,10 +116,12 @@ export function InboxScreen() {
           );
         }}
         ListEmptyComponent={
-          <View style={styles.center} testID={testIds.inbox.emptyState}>
-            <Ionicons name="mail-open-outline" size={48} color={theme.colors.muted} />
-            <Text style={styles.muted}>You&apos;re all caught up.</Text>
-          </View>
+          <EmptyState
+            testID={testIds.inbox.emptyState}
+            icon="mail-open-outline"
+            title="You're all caught up"
+            body="New events, ticket updates, and promos will land here."
+          />
         }
       />
     </View>

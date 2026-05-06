@@ -26,3 +26,22 @@ export function formatEventDate(iso: string): string {
     minute: '2-digit',
   }).format(d);
 }
+
+export function formatDateShort(iso: string): string {
+  const locale = useQaStore.getState().locale ?? undefined;
+  const d = new Date(iso);
+  return new Intl.DateTimeFormat(locale, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  }).format(d);
+}
+
+export function formatTimeShort(iso: string): string {
+  const locale = useQaStore.getState().locale ?? undefined;
+  const d = new Date(iso);
+  return new Intl.DateTimeFormat(locale, {
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(d);
+}

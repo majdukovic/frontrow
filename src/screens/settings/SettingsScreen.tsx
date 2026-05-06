@@ -26,7 +26,7 @@ export function SettingsScreen() {
       testID={testIds.settings.screen}
     >
       <Section title="Preferences">
-        <Row label="Push notifications">
+        <Row icon="notifications-outline" label="Push notifications">
           <Switch
             testID={testIds.settings.notificationsToggle}
             accessibilityLabel="Push notifications"
@@ -36,6 +36,7 @@ export function SettingsScreen() {
         </Row>
         <Row
           testID={testIds.settings.languageRow}
+          icon="globe-outline"
           label="Language"
           value={language}
           onPress={() => nav.navigate('Language')}
@@ -45,6 +46,7 @@ export function SettingsScreen() {
       <Section title="Billing">
         <Row
           testID={testIds.settings.paymentMethodsRow}
+          icon="card-outline"
           label="Payment methods"
           onPress={() => nav.navigate('PaymentMethods')}
         />
@@ -53,11 +55,13 @@ export function SettingsScreen() {
       <Section title="About">
         <Row
           testID={testIds.settings.aboutRow}
+          icon="information-circle-outline"
           label="About FrontRow"
           onPress={() => nav.navigate('About')}
         />
         <Row
           testID={testIds.settings.privacyRow}
+          icon="shield-checkmark-outline"
           label="Privacy policy"
           onPress={() =>
             nav.navigate('WebView', {
@@ -68,6 +72,7 @@ export function SettingsScreen() {
         />
         <Row
           testID={testIds.settings.termsRow}
+          icon="document-text-outline"
           label="Terms of service"
           onPress={() =>
             nav.navigate('WebView', { url: 'https://example.com/terms', title: 'Terms of service' })
