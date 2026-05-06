@@ -90,6 +90,16 @@ export const testIds = {
       errorMessage: 'webview.errorMessage',
     },
   },
+  reviews: {
+    screen: 'screen.reviews',
+    list: 'reviews.list',
+    item: (id: string) => `reviews.item.${id}`,
+    ratingInput: 'reviews.ratingInput',
+    textInput: 'reviews.textInput',
+    charCount: 'reviews.charCount',
+    submitButton: 'reviews.submitButton',
+    errorMessage: 'reviews.errorMessage',
+  },
   buyTicket: {
     screen: 'screen.buyTicket',
     quantityStepper: 'buyTicket.quantityStepper',

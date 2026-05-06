@@ -7,6 +7,7 @@ import { theme } from '../theme';
 import { EventsListScreen } from '../screens/EventsListScreen';
 import { EventDetailScreen } from '../screens/EventDetailScreen';
 import { BuyTicketScreen } from '../screens/BuyTicketScreen';
+import { EventReviewsScreen } from '../screens/EventReviewsScreen';
 import { MyTicketsListScreen } from '../screens/MyTicketsListScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { LoginScreen } from '../screens/auth/LoginScreen';
@@ -58,6 +59,11 @@ function EventsNavigator() {
         name="BuyTicket"
         component={BuyTicketScreen}
         options={{ title: 'Buy Ticket', presentation: 'modal' }}
+      />
+      <EventsStack.Screen
+        name="EventReviews"
+        component={EventReviewsScreen}
+        options={{ title: 'Reviews' }}
       />
     </EventsStack.Navigator>
   );

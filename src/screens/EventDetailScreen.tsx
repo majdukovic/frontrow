@@ -59,6 +59,12 @@ export function EventDetailScreen({ route }: Props) {
             disabled={event.soldOut}
             onPress={() => nav.navigate('BuyTicket', { eventId: event.id })}
           />
+          <Button
+            testID="eventDetail.reviewsButton"
+            title="Reviews"
+            variant="secondary"
+            onPress={() => nav.navigate('EventReviews', { eventId: event.id })}
+          />
         </View>
       </View>
     </ScrollView>

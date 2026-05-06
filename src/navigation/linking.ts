@@ -12,6 +12,7 @@ export const linking: LinkingOptions<RootTabParamList> = {
           EventsList: 'events',
           EventDetail: 'events/:id',
           BuyTicket: 'events/:eventId/buy',
+          EventReviews: 'events/:eventId/reviews',
         },
       },
       MyTickets: {

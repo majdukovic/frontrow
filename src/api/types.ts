@@ -54,6 +54,16 @@ export type AuthResponse = {
   user: User;
 };
 
+export type Review = {
+  id: string;
+  eventId: string;
+  userId: string;
+  authorName: string;
+  rating: 1 | 2 | 3 | 4 | 5;
+  text: string;
+  createdAt: string;
+};
+
 export type ApiError = {
   code: string;
   message: string;
