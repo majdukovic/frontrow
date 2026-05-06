@@ -50,7 +50,14 @@ export function useDeepLinkScenario(): void {
     const handle = (url: string | null) => {
       if (!url) return;
       const parsed = Linking.parse(url);
-      const segments = [parsed.hostname, parsed.path].filter(Boolean).join('/');
+      // expo-linking may emit path with a leading slash, producing
+      // a double slash when joined ("debug//forceError/5xx") that
+      // breaks downstream regexes. Collapse runs of `/` so all
+      // matchers can assume a normalized form.
+      const segments = [parsed.hostname, parsed.path]
+        .filter(Boolean)
+        .join('/')
+        .replace(/\/{2,}/g, '/');
 
       if (/(?:^|\/)debug\/reset$/.test(segments)) {
         resetMockState();
