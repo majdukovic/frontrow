@@ -39,7 +39,7 @@ Sets `useQaStore.timeOffsetMs`. Anywhere the app needs "now," it goes through `n
 
 ### Network
 
-- **Force error** — next API call (per service function) throws `ApiClientError(400|500|408)` from `applyQaForcedError()`.
+- **Force error** — next API call throws `ApiClientError` from `applyQaForcedError()`. Modes: `4xx` (400), `5xx` (500), `Timeout` (408), `Offline` (status 0). The `Offline` mode also surfaces a red banner across the top of the app via `app.offlineBanner` so tests can assert the offline UX without wiring NetInfo.
 - **Delay** — every service function awaits `applyQaDelay()` for the chosen ms before resolving.
 
 ### Locale
@@ -50,6 +50,10 @@ Override the i18next/Intl locale for the session. Empty input restores device de
 
 - **Fire fake push** — Phase 2 ships an Alert simulation. Phase 3 swaps this for `expo-notifications` local push.
 - **Trigger crash** — throws asynchronously to exercise crash reporters.
+
+### First-run
+
+- **Replay onboarding** — flips the persisted `onboardingPending` flag and re-renders the OnboardingScreen above the app. Lets QA exercise the swipe-through pager + skip path without uninstalling. The screen clears the flag itself when the user finishes or skips.
 
 ### Reset
 
