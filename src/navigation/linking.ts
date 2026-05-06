@@ -18,11 +18,13 @@ export const linking: LinkingOptions<RootTabParamList> = {
       MyTickets: {
         screens: {
           MyTicketsList: 'tickets',
+          TicketDetail: 'tickets/:id',
         },
       },
       Profile: {
         screens: {
           ProfileHome: 'profile',
+          EditProfile: 'profile/edit',
           Login: 'profile/login',
           ForgotPassword: 'profile/forgot-password',
           Otp: 'profile/otp',
@@ -31,6 +33,8 @@ export const linking: LinkingOptions<RootTabParamList> = {
           Settings: 'profile/settings',
           Language: 'profile/language',
           About: 'profile/about',
+          PaymentMethods: 'profile/payment-methods',
+          AddPaymentMethod: 'profile/payment-methods/add',
         },
       },
       Debug: {

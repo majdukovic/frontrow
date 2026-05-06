@@ -33,11 +33,12 @@ That's it. No backend to run, no accounts to create, no secrets to configure.
 
 - **React Native + Expo (prebuilt)** — single TypeScript codebase, native iOS and Android projects committed.
 - **Local-first** — all data lives in MMKV, seeded from JSON fixtures, no backend.
-- **Stable test IDs** — central registry in `src/testIds.ts`. testIDs become `accessibilityIdentifier` on iOS and `resource-id` on Android, so Maestro / Appium / Espresso / XCUITest all hit the same selectors.
-- **QA Debug Menu** — Build info · Jump-to-screen · Device-capability demos · Seed scenarios · Time travel · Force error · Network delay · Locale override · Fake push · Crash · IAP outcome control · Analytics event log · Reset.
+- **Stable test IDs** — central registry in `src/testIds.ts`. testIDs become `accessibilityIdentifier` on iOS and `resource-id` on Android, so Maestro / Appium / Espresso / XCUITest all hit the same selectors. A custom ESLint rule (`frontrow/require-testid`) flags interactive elements that ship without one.
+- **QA Debug Menu** — Build info · Jump-to-screen · Device-capability demos · Seed scenarios · Time travel · Force error (4xx / 5xx / timeout / offline) · Network delay · Locale override · Replay onboarding · Fake push · Crash · IAP outcome control · Analytics event log · Reset.
 - **Deep-link contract** — every public deep link documented in [docs/DEEPLINKS.md](docs/DEEPLINKS.md), including `frontrow://debug/seed/<scenario>` to put the app into a known state from a single `launchApp` directive.
 - **Mock IAP** — products, receipts, restore-purchases, with QA-controlled outcomes (success, decline, cancel, pending) — see [docs/tutorials/SCENARIOS_AS_FIXTURES.md](docs/tutorials/SCENARIOS_AS_FIXTURES.md).
 - **Device capability demos** — camera, microphone, location, biometric, haptics, calendar, share, notifications. Each has a dedicated screen with stable testIDs.
+- **Realistic product surfaces** — onboarding pager · search with debounce + genre + favorites filters · paginated infinite scroll · star-rated reviews · ticket detail with QR + cancel + transfer · saved payment methods CRUD · edit-profile with dirty-state guard · forgot-password (email → OTP → reset) · offline banner — every feature ships with at least one Maestro flow.
 
 ## Test frameworks
 
@@ -73,6 +74,7 @@ A flow is a flow regardless of framework. Look at `tests/maestro/auth/login.yaml
 | 5     | `expo prebuild`, MMKV migration, Espresso + XCUITest scaffolding                          | ✓      |
 | 6     | Appium WebdriverIO suite + Maestro Cloud CI                                               | ✓      |
 | 7     | Tutorials, scenario recipes, README polish                                                | ✓      |
+| 8     | Realistic product surfaces (onboarding, favorites, ticket transfer, payment methods, etc.) | ✓      |
 
 ## Contributing
 
