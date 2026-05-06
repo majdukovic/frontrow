@@ -143,7 +143,9 @@ export function EventDetailScreen({ route }: Props) {
         </Text>
         {event.lineup && event.lineup.length > 0 ? (
           <View testID={testIds.eventDetail.lineup} style={styles.lineupBlock}>
-            <Text style={styles.sectionHeading}>Lineup</Text>
+            <Text accessibilityRole="header" style={styles.sectionHeading}>
+              Lineup
+            </Text>
             {event.lineup.map((slot, i) => (
               <View
                 key={`${slot.artist}-${slot.startsAt}`}
@@ -164,7 +166,9 @@ export function EventDetailScreen({ route }: Props) {
           <View testID={testIds.eventDetail.refundPolicy} style={styles.refundBlock}>
             <View style={styles.refundHeader}>
               <Ionicons name="shield-checkmark-outline" size={18} color={theme.colors.success} />
-              <Text style={styles.refundTitle}>Refund policy</Text>
+              <Text accessibilityRole="header" style={styles.refundTitle}>
+                Refund policy
+              </Text>
             </View>
             {event.refundPolicy.refundableUntil ? (
               <Text style={styles.refundLine}>

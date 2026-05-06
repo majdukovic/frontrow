@@ -11,16 +11,21 @@ type Props = {
 };
 
 export function HeroEventCard({ event, onPress }: Props) {
+  // The hero is the same event the list would otherwise render at index 0.
+  // Tests target events.item.<id> regardless of layout — keep that contract
+  // so existing browse / buy / favorites flows still drive the first event.
   return (
-    <Pressable
-      testID={testIds.events.heroCard}
-      accessibilityRole="button"
-      accessibilityLabel={`Featured: ${event.title}`}
-      onPress={() => onPress(event)}
-      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
-    >
+    <View testID={testIds.events.heroCard}>
+      <Pressable
+        testID={testIds.events.item(event.id)}
+        accessibilityRole="button"
+        accessibilityLabel={`Featured: ${event.title}`}
+        onPress={() => onPress(event)}
+        style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+      >
       <Image source={{ uri: event.imageUrl }} style={styles.image} accessible={false} />
       <View style={styles.overlay} pointerEvents="none" />
+      <View style={styles.overlayMid} pointerEvents="none" />
       <View style={styles.overlayBottom} pointerEvents="none" />
       <View style={styles.featuredBadge}>
         <Text style={styles.featuredText}>FEATURED</Text>
@@ -45,6 +50,7 @@ export function HeroEventCard({ event, onPress }: Props) {
         </View>
       </View>
     </Pressable>
+    </View>
   );
 }
 
@@ -59,12 +65,23 @@ const styles = StyleSheet.create({
   },
   cardPressed: { opacity: 0.85 },
   image: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
+  // Three stacked translucent layers fake a vertical gradient — the
+  // text region is fully covered while the top of the image stays
+  // bright enough to read the FEATURED badge.
   overlay: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    height: '50%',
+    height: '85%',
+    backgroundColor: 'rgba(0,0,0,0.25)',
+  },
+  overlayMid: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '60%',
     backgroundColor: 'rgba(0,0,0,0.35)',
   },
   overlayBottom: {
@@ -72,7 +89,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    height: '35%',
+    height: '40%',
     backgroundColor: 'rgba(0,0,0,0.55)',
   },
   featuredBadge: {

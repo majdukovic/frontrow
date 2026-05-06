@@ -93,6 +93,7 @@ export function InboxScreen() {
             <Pressable
               testID={testIds.inbox.item(item.id)}
               accessibilityRole="button"
+              accessibilityLabel={`${item.title}${isUnread ? ', unread' : ''}`}
               accessibilityState={{ selected: !isUnread }}
               onPress={() => onTap(item)}
               style={[styles.row, isUnread && styles.rowUnread]}

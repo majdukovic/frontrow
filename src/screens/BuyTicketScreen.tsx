@@ -96,6 +96,7 @@ export function BuyTicketScreen({ route }: Props) {
                 key={t.id}
                 testID={testIds.buyTicket.tierOption(t.id)}
                 accessibilityRole="radio"
+                accessibilityLabel={`${t.label}${t.soldOut ? ', sold out' : ''}`}
                 accessibilityState={{ selected: isSelected, disabled: t.soldOut === true }}
                 onPress={() => !t.soldOut && setTierId(t.id)}
                 style={[
@@ -157,6 +158,7 @@ export function BuyTicketScreen({ route }: Props) {
             <Pressable
               testID={testIds.buyTicket.promoRemoveButton}
               accessibilityRole="button"
+              accessibilityLabel="Remove promo code"
               onPress={onClearPromo}
             >
               <Text style={styles.promoRemove}>Remove</Text>

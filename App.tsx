@@ -18,6 +18,7 @@ import { useRecentlyViewedStore } from './src/state/recentlyViewed';
 import { useDeepLinkScenario } from './src/hooks/useDeepLinkScenario';
 import { ToastHost } from './src/components/ToastHost';
 import { OfflineBanner } from './src/components/OfflineBanner';
+import { ErrorBoundary } from './src/components/ErrorBoundary';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
 import { theme } from './src/theme';
 
@@ -78,7 +79,7 @@ export default function App() {
     <SafeAreaProvider>
       <I18nextProvider i18n={i18n}>
         <QueryClientProvider client={queryClient}>
-          {allHydrated ? <AppShell /> : <HydrationGate />}
+          <ErrorBoundary>{allHydrated ? <AppShell /> : <HydrationGate />}</ErrorBoundary>
         </QueryClientProvider>
       </I18nextProvider>
     </SafeAreaProvider>

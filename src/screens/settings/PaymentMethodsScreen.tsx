@@ -111,6 +111,8 @@ export function PaymentMethodsScreen() {
               {!item.isDefault ? (
                 <Pressable
                   testID={testIds.paymentMethods.setDefaultButton(item.id)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Set ${BRAND_LABEL[item.brand]} ending in ${item.last4} as default`}
                   onPress={() => void onSetDefault(item)}
                   hitSlop={8}
                 >
@@ -119,6 +121,8 @@ export function PaymentMethodsScreen() {
               ) : null}
               <Pressable
                 testID={testIds.paymentMethods.deleteButton(item.id)}
+                accessibilityRole="button"
+                accessibilityLabel={`Delete ${BRAND_LABEL[item.brand]} ending in ${item.last4}`}
                 onPress={() => onDelete(item)}
                 hitSlop={8}
               >

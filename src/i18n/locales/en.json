@@ -1,7 +1,8 @@
 {
   "events": {
     "heading": "Events",
-    "placeholder": "Browse upcoming concerts and shows."
+    "placeholder": "Browse upcoming concerts and shows.",
+    "searchPlaceholder": "Search shows, artists, cities…"
   },
   "myTickets": {
     "heading": "My Tickets",

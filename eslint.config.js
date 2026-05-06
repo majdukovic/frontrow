@@ -21,6 +21,7 @@ module.exports = defineConfig([
     rules: {
       'react-hooks/exhaustive-deps': 'warn',
       'frontrow/require-testid': 'warn',
+      'frontrow/require-a11y-label': 'warn',
     },
   },
 ]);

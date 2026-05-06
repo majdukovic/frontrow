@@ -23,7 +23,9 @@ export function EmptyState({ icon, title, body, testID }: Props) {
       <View style={styles.iconCircle}>
         <Ionicons name={icon} size={36} color={theme.colors.muted} />
       </View>
-      <Text style={styles.title}>{title}</Text>
+      <Text accessibilityRole="header" style={styles.title}>
+        {title}
+      </Text>
       {body ? <Text style={styles.body}>{body}</Text> : null}
     </View>
   );

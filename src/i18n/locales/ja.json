@@ -1,7 +1,8 @@
 {
   "events": {
     "heading": "イベント",
-    "placeholder": "今後のコンサートやショーを見る。"
+    "placeholder": "今後のコンサートやショーを見る。",
+    "searchPlaceholder": "公演・アーティスト・都市を検索…"
   },
   "myTickets": {
     "heading": "マイチケット",
