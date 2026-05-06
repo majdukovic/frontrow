@@ -7,8 +7,15 @@ appId: app.frontrow.qa
 # Sign in first
 - runFlow: ../auth/login.yaml
 
-# Apply expired_tickets via debug deep link
+# Apply expired_tickets via debug deep link.
 - openLink: 'frontrow://debug/seed/expired_tickets'
+# iOS may show a system "Open in <App>?" confirmation when opening a custom-scheme
+# URL while another app is foregrounded. Dismiss it if present.
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
 
 # Open My Tickets and verify the status shows used on every ticket.
 - tapOn:

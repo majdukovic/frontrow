@@ -25,7 +25,6 @@ appId: app.frontrow.qa
     id: 'login.passwordInput'
 - eraseText
 - inputText: 'demo1234'
-- hideKeyboard
 - tapOn:
     id: 'login.submitButton'
 

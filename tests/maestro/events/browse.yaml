@@ -12,7 +12,6 @@ appId: app.frontrow.qa
 - tapOn:
     id: 'events.searchInput'
 - inputText: 'Aurora'
-- hideKeyboard
 - extendedWaitUntil:
     visible:
       id: 'events.item.evt_002'
@@ -22,17 +21,21 @@ appId: app.frontrow.qa
 - tapOn:
     id: 'events.searchInput'
 - eraseText
-- hideKeyboard
 - extendedWaitUntil:
     visible:
       id: 'events.item.evt_001'
     timeout: 10000
 
-# Open detail
+# Open detail. Wait for animation to settle on iOS where the keyboard
+# focus transition can defer the tap by a frame or two.
 - tapOn:
     id: 'events.item.evt_001'
-- assertVisible:
-    id: 'screen.eventDetail'
+- waitForAnimationToEnd:
+    timeout: 5000
+- extendedWaitUntil:
+    visible:
+      id: 'screen.eventDetail'
+    timeout: 10000
 - assertVisible:
     id: 'eventDetail.buyButton'
 
