@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 import { store, storeKeys } from '../storage/asyncStore';
 
-type ForceErrorMode = 'none' | '4xx' | '5xx' | 'timeout';
+type ForceErrorMode = 'none' | '4xx' | '5xx' | 'timeout' | 'offline';
 
 type QaState = {
   hydrated: boolean;

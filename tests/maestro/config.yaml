@@ -38,4 +38,5 @@ executionOrder:
     - billing/payment-methods-crud
     - debug/scenario-deep-link
     - debug/force-error
+    - debug/offline-banner
     - capabilities/haptic

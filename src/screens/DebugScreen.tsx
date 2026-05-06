@@ -26,11 +26,15 @@ const PRESET_TIME_OFFSETS: { label: string; ms: number }[] = [
   { label: '+1mo', ms: 30 * 24 * 60 * 60 * 1000 },
 ];
 
-const FORCE_ERROR_MODES: { label: string; value: 'none' | '4xx' | '5xx' | 'timeout' }[] = [
+const FORCE_ERROR_MODES: {
+  label: string;
+  value: 'none' | '4xx' | '5xx' | 'timeout' | 'offline';
+}[] = [
   { label: 'None', value: 'none' },
   { label: '4xx', value: '4xx' },
   { label: '5xx', value: '5xx' },
   { label: 'Timeout', value: 'timeout' },
+  { label: 'Offline', value: 'offline' },
 ];
 
 const IAP_OUTCOMES: { label: string; value: PurchaseOutcome }[] = [

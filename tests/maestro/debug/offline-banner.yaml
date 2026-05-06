@@ -1,0 +1,42 @@
+# Toggle offline mode from debug, expect the banner and a failing list.
+appId: app.frontrow.qa
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 60000
+
+- tapOn:
+    id: 'tab.debug'
+- assertVisible:
+    id: 'screen.debug'
+
+- scrollUntilVisible:
+    element:
+      id: 'debug.forceError.offline'
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    id: 'debug.forceError.offline'
+
+- assertVisible:
+    id: 'app.offlineBanner'
+
+# Events list now fails — error message replaces the data.
+- tapOn:
+    id: 'tab.events'
+- assertVisible:
+    id: 'events.errorMessage'
+
+# Restore connectivity and the banner disappears.
+- tapOn:
+    id: 'tab.debug'
+- scrollUntilVisible:
+    element: 'None'
+    direction: UP
+    timeout: 5000
+- tapOn: 'None'
+- assertNotVisible:
+    id: 'app.offlineBanner'

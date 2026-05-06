@@ -5,6 +5,7 @@
 export const testIds = {
   app: {
     root: 'app.root',
+    offlineBanner: 'app.offlineBanner',
   },
   onboarding: {
     screen: 'screen.onboarding',

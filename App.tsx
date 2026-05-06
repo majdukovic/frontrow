@@ -16,6 +16,7 @@ import { useBillingStore } from './src/state/billing';
 import { useSettingsStore } from './src/state/settings';
 import { useDeepLinkScenario } from './src/hooks/useDeepLinkScenario';
 import { ToastHost } from './src/components/ToastHost';
+import { OfflineBanner } from './src/components/OfflineBanner';
 import { OnboardingScreen } from './src/screens/OnboardingScreen';
 import { theme } from './src/theme';
 
@@ -25,6 +26,7 @@ function AppShell() {
   const onboardingPending = useSettingsStore((s) => s.onboardingPending);
   return (
     <NavigationContainer linking={linking}>
+      <OfflineBanner />
       {onboardingPending ? <OnboardingScreen /> : <RootNavigator />}
       <ToastHost />
       <StatusBar style="auto" />

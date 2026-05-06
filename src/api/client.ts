@@ -39,4 +39,10 @@ export function applyQaForcedError(): void {
       message: 'Forced timeout from QA menu.',
     });
   }
+  if (mode === 'offline') {
+    throw new ApiClientError(0, {
+      code: 'offline',
+      message: 'No internet connection.',
+    });
+  }
 }
