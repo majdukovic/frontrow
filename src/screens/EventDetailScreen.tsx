@@ -19,6 +19,11 @@ import { theme } from '../theme';
 import { testIds } from '../testIds';
 import { useEvent } from '../hooks/useEvents';
 import { useFavoriteEventIds, useToggleFavorite } from '../hooks/useFavorites';
+import {
+  useArtistByName,
+  useFollowedArtists,
+  useToggleFollowArtist,
+} from '../hooks/useArtists';
 import { useAuthStore } from '../state/auth';
 import { Button } from '../components/Button';
 import { formatPrice, formatEventDate } from '../utils/format';
@@ -34,6 +39,10 @@ export function EventDetailScreen({ route }: Props) {
   const { data: favIds } = useFavoriteEventIds();
   const toggleFavorite = useToggleFavorite();
   const isFavorite = (favIds ?? []).includes(id);
+  const { data: artist } = useArtistByName(event?.artist);
+  const { data: followed } = useFollowedArtists();
+  const toggleFollow = useToggleFollowArtist();
+  const isFollowing = artist ? (followed ?? []).some((a) => a.id === artist.id) : false;
 
   if (isLoading) {
     return (
@@ -100,7 +109,28 @@ export function EventDetailScreen({ route }: Props) {
             </Pressable>
           ) : null}
         </View>
-        <Text style={styles.subtitle}>{event.artist}</Text>
+        <View style={styles.artistRow}>
+          <Text style={styles.subtitle}>{event.artist}</Text>
+          {isSignedIn && artist ? (
+            <Pressable
+              testID={testIds.eventDetail.followArtistButton}
+              accessibilityRole="button"
+              accessibilityLabel={isFollowing ? 'Unfollow artist' : 'Follow artist'}
+              accessibilityState={{ selected: isFollowing }}
+              onPress={() =>
+                void toggleFollow.mutateAsync({ artistId: artist.id, follow: !isFollowing })
+              }
+              style={[styles.followPill, isFollowing && styles.followPillActive]}
+              hitSlop={8}
+            >
+              <Text
+                style={[styles.followPillText, isFollowing && styles.followPillTextActive]}
+              >
+                {isFollowing ? 'Following' : '+ Follow'}
+              </Text>
+            </Pressable>
+          ) : null}
+        </View>
         <Text style={styles.meta}>{formatEventDate(event.startsAt)}</Text>
         <Text style={styles.meta}>
           {event.venue.name} · {event.venue.city}, {event.venue.country}
@@ -144,7 +174,23 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: theme.colors.text,
   },
-  subtitle: { fontSize: theme.typography.title, color: theme.colors.text },
+  subtitle: { fontSize: theme.typography.title, color: theme.colors.text, flex: 1 },
+  artistRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.md,
+  },
+  followPill: {
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: theme.colors.primary,
+    backgroundColor: 'transparent',
+  },
+  followPillActive: { backgroundColor: theme.colors.primary },
+  followPillText: { fontSize: theme.typography.caption, fontWeight: '700', color: theme.colors.primary },
+  followPillTextActive: { color: theme.colors.primaryText },
   meta: { fontSize: theme.typography.body, color: theme.colors.muted },
   actions: { marginTop: theme.spacing.lg },
   error: { color: theme.colors.danger, fontSize: theme.typography.body },

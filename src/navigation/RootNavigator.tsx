@@ -13,6 +13,7 @@ import { MyTicketsListScreen } from '../screens/MyTicketsListScreen';
 import { TicketDetailScreen } from '../screens/TicketDetailScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { EditProfileScreen } from '../screens/EditProfileScreen';
+import { FollowingScreen } from '../screens/FollowingScreen';
 import { LoginScreen } from '../screens/auth/LoginScreen';
 import { ForgotPasswordScreen } from '../screens/auth/ForgotPasswordScreen';
 import { OtpScreen } from '../screens/auth/OtpScreen';
@@ -104,6 +105,11 @@ function ProfileNavigator() {
         name="EditProfile"
         component={EditProfileScreen}
         options={{ title: 'Edit profile' }}
+      />
+      <ProfileStack.Screen
+        name="Following"
+        component={FollowingScreen}
+        options={{ title: 'Following' }}
       />
       <ProfileStack.Screen
         name="Login"

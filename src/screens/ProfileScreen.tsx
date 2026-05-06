@@ -56,6 +56,12 @@ export function ProfileScreen() {
         onPress={() => nav.navigate('EditProfile')}
       />
       <Button
+        testID="profile.followingButton"
+        title="Following"
+        variant="secondary"
+        onPress={() => nav.navigate('Following')}
+      />
+      <Button
         testID="profile.premiumButton"
         title="Premium"
         variant="secondary"

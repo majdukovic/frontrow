@@ -132,6 +132,14 @@ export const testIds = {
     favoriteButton: 'eventDetail.favoriteButton',
     shareButton: 'eventDetail.shareButton',
     reviewsButton: 'eventDetail.reviewsButton',
+    followArtistButton: 'eventDetail.followArtistButton',
+  },
+  following: {
+    screen: 'screen.following',
+    list: 'following.list',
+    item: (id: string) => `following.item.${id}`,
+    unfollowButton: (id: string) => `following.unfollow.${id}`,
+    emptyState: 'following.emptyState',
   },
   settings: {
     screen: 'screen.settings',

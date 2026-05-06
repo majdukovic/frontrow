@@ -1,6 +1,7 @@
 import { seed } from './seed';
 import type {
   AppNotification,
+  Artist,
   Event,
   PaymentMethod,
   Review,
@@ -106,6 +107,9 @@ export const mockState = {
     Object.entries(seedFavorites).map(([uid, ids]) => [uid, new Set(ids)]),
   ),
   notifications: [...seedNotifications] as AppNotification[],
+  artists: [...seed.artists] as Artist[],
+  // userId -> set of followed artist ids
+  follows: new Map<string, Set<string>>(),
   sessions: new Map<string, string>(), // token -> userId
 };
 
@@ -125,4 +129,6 @@ export function resetMockState(): void {
     Object.entries(seedFavorites).map(([uid, ids]) => [uid, new Set(ids)]),
   );
   mockState.notifications = [...seedNotifications];
+  mockState.artists = [...seed.artists];
+  mockState.follows = new Map();
 }

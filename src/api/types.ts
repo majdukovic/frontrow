@@ -14,6 +14,7 @@ export type Event = {
   id: string;
   title: string;
   artist: string;
+  artistId?: string;
   genre: string;
   startsAt: string; // ISO
   doorsAt: string; // ISO
@@ -63,6 +64,15 @@ export type Review = {
   rating: 1 | 2 | 3 | 4 | 5;
   text: string;
   createdAt: string;
+};
+
+export type Artist = {
+  id: string;
+  name: string;
+  avatarUrl: string | null;
+  bio?: string;
+  genres: string[];
+  followers: number;
 };
 
 export type CardBrand = 'visa' | 'mastercard' | 'amex' | 'discover' | 'unknown';

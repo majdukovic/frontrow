@@ -1,0 +1,36 @@
+# Follow an artist from event detail, see them in the Following list, unfollow.
+appId: app.frontrow.qa
+---
+- runFlow: ../auth/login.yaml
+
+- tapOn:
+    id: 'tab.events'
+- tapOn:
+    id: 'events.item.evt_001'
+- extendedWaitUntil:
+    visible:
+      id: 'screen.eventDetail'
+    timeout: 10000
+
+# Pill should currently say "+ Follow".
+- assertVisible:
+    id: 'eventDetail.followArtistButton'
+- tapOn:
+    id: 'eventDetail.followArtistButton'
+
+- back
+
+# Profile → Following → assert the artist is listed.
+- tapOn:
+    id: 'tab.profile'
+- tapOn: 'profile.followingButton'
+- assertVisible:
+    id: 'screen.following'
+- assertVisible:
+    id: 'following.item.art_midnight_howl'
+
+- tapOn:
+    id: 'following.unfollow.art_midnight_howl'
+- assertVisible: 'Unfollowed'
+- assertNotVisible:
+    id: 'following.item.art_midnight_howl'

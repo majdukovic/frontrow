@@ -35,6 +35,7 @@ executionOrder:
     - tickets/transfer
     - events/reviews
     - events/favorites
+    - events/follow-artist
     - events/inbox
     - billing/buy-success
     - billing/buy-decline
