@@ -2,12 +2,9 @@
 # translated label appears on the events tab.
 appId: app.frontrow.qa
 ---
-- launchApp:
-    clearState: true
-- extendedWaitUntil:
-    visible:
-      id: 'screen.events'
-    timeout: 20000
+# Sign in via fast-boot so the Profile screen shows the full
+# settings list (settingsButton only renders when signed in).
+- runFlow: ../_setup.yaml
 
 - tapOn:
     id: 'tab.profile'

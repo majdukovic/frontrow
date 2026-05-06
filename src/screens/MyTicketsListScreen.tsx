@@ -150,7 +150,7 @@ function TicketRow({
         <Text style={styles.cardMeta}>
           {ticket.quantity} × · {formatPrice(ticket.totalCents, ticket.currency)} ·{' '}
           <Text testID={`myTickets.status.${ticket.id}`} style={styles.status}>
-            {ticket.status}
+            {ticket.status.replace('_', ' ')}
           </Text>
         </Text>
       </Card>

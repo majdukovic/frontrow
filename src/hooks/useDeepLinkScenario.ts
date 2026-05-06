@@ -91,8 +91,13 @@ export function useDeepLinkScenario(): void {
       );
       if (forceErr) {
         const mode = forceErr[1] as 'none' | '4xx' | '5xx' | 'timeout' | 'offline';
-        void useQaStore.getState().setForceError(mode);
-        void qc.invalidateQueries();
+        // setForceError is async (writes MMKV then sets state) — chain
+        // invalidateQueries after it completes so the refetch sees the
+        // new forceError value, not the stale one.
+        void useQaStore
+          .getState()
+          .setForceError(mode)
+          .then(() => qc.invalidateQueries());
         track('debug.forceError.set', { mode });
         return;
       }
@@ -137,8 +142,10 @@ export function useDeepLinkScenario(): void {
       const scenario = scenarios[id];
       if (!scenario) return;
       scenario.apply();
-      void setScenario(id);
-      void qc.invalidateQueries();
+      // Sync mockState mutation already happened in scenario.apply().
+      // Persist the scenario id, then invalidate so cached queries
+      // refetch with the new mockState.
+      void setScenario(id).then(() => qc.invalidateQueries());
       track('debug.scenario.applied', { id });
     };
 

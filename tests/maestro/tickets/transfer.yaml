@@ -16,6 +16,10 @@ appId: app.frontrow.qa
       id: 'screen.ticketDetail'
     timeout: 5000
 
+# Each test case opens the modal fresh — Maestro's tapOn places the
+# cursor wherever the tap landed (often mid-string), and eraseText
+# deletes from cursor backward. Reopening guarantees a clean input.
+
 # 1. invalid email format
 - tapOn:
     id: 'ticketDetail.transferButton'
@@ -31,11 +35,14 @@ appId: app.frontrow.qa
     id: 'ticketDetail.transferSubmitButton'
 - assertVisible:
     id: 'ticketDetail.transferError'
+- tapOn:
+    id: 'ticketDetail.transferCancelButton'
 
-# 2. valid format but unknown recipient
+# 2. valid format but unknown recipient — reopen modal for clean input.
+- tapOn:
+    id: 'ticketDetail.transferButton'
 - tapOn:
     id: 'ticketDetail.transferEmailInput'
-- eraseText: 50
 - inputText: 'nobody@example.com'
 - runFlow:
     when:
@@ -46,11 +53,14 @@ appId: app.frontrow.qa
     id: 'ticketDetail.transferSubmitButton'
 - assertVisible:
     id: 'ticketDetail.transferError'
+- tapOn:
+    id: 'ticketDetail.transferCancelButton'
 
-# 3. valid recipient — succeeds
+# 3. valid recipient — reopen, type, submit.
+- tapOn:
+    id: 'ticketDetail.transferButton'
 - tapOn:
     id: 'ticketDetail.transferEmailInput'
-- eraseText: 50
 - inputText: 'friend@frontrow.app'
 - runFlow:
     when:

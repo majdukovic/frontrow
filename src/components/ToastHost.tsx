@@ -46,7 +46,9 @@ export function ToastHost() {
 const styles = StyleSheet.create({
   host: {
     position: 'absolute',
-    bottom: theme.spacing.xl,
+    // Sit above the bottom tab bar (~56dp) — otherwise the toast's
+    // Pressable overlaps tab hit areas and steals taps in tests.
+    bottom: 96,
     left: theme.spacing.md,
     right: theme.spacing.md,
     gap: theme.spacing.sm,
