@@ -11,6 +11,14 @@ import type {
 
 type SeedUser = User & { password: string };
 
+// Deep clone via structuredClone where available, JSON otherwise. Necessary
+// because resetPassword / transferTicket / cancelTicket mutate object fields
+// in-place; without a deep copy, scenario tests bleed state into each other.
+function deepClone<T>(value: T): T {
+  if (typeof structuredClone === 'function') return structuredClone(value);
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
 const seedReviews: Review[] = [
   {
     id: 'rev_001',
@@ -98,16 +106,16 @@ const seedNotifications: AppNotification[] = [
 ];
 
 export const mockState = {
-  events: [...seed.events] as Event[],
-  users: [...seed.users] as SeedUser[],
-  tickets: [...seed.tickets] as Ticket[],
-  reviews: [...seedReviews] as Review[],
-  paymentMethods: [...seedPaymentMethods] as PaymentMethod[],
+  events: deepClone(seed.events) as Event[],
+  users: deepClone(seed.users) as SeedUser[],
+  tickets: deepClone(seed.tickets) as Ticket[],
+  reviews: deepClone(seedReviews) as Review[],
+  paymentMethods: deepClone(seedPaymentMethods) as PaymentMethod[],
   favorites: new Map<string, Set<string>>(
     Object.entries(seedFavorites).map(([uid, ids]) => [uid, new Set(ids)]),
   ),
-  notifications: [...seedNotifications] as AppNotification[],
-  artists: [...seed.artists] as Artist[],
+  notifications: deepClone(seedNotifications) as AppNotification[],
+  artists: deepClone(seed.artists) as Artist[],
   // userId -> set of followed artist ids
   follows: new Map<string, Set<string>>(),
   sessions: new Map<string, string>(), // token -> userId
@@ -120,15 +128,15 @@ export const mockState = {
  * the app makes after.
  */
 export function resetMockState(): void {
-  mockState.events = [...seed.events];
-  mockState.users = [...seed.users];
-  mockState.tickets = [...seed.tickets];
-  mockState.reviews = [...seedReviews];
-  mockState.paymentMethods = [...seedPaymentMethods];
+  mockState.events = deepClone(seed.events);
+  mockState.users = deepClone(seed.users);
+  mockState.tickets = deepClone(seed.tickets);
+  mockState.reviews = deepClone(seedReviews);
+  mockState.paymentMethods = deepClone(seedPaymentMethods);
   mockState.favorites = new Map(
     Object.entries(seedFavorites).map(([uid, ids]) => [uid, new Set(ids)]),
   );
-  mockState.notifications = [...seedNotifications];
-  mockState.artists = [...seed.artists];
+  mockState.notifications = deepClone(seedNotifications);
+  mockState.artists = deepClone(seed.artists);
   mockState.follows = new Map();
 }

@@ -110,6 +110,7 @@ export function MyTicketsListScreen() {
           <Pressable
             testID={testIds.myTickets.item(item.id)}
             accessibilityRole="button"
+            accessibilityLabel={`${item.tier} ticket, ${item.status}`}
             onPress={() => nav.navigate('TicketDetail', { id: item.id })}
           >
             <Card>

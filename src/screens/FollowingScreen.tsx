@@ -76,6 +76,7 @@ export function FollowingScreen() {
             <Pressable
               testID={testIds.following.unfollowButton(item.id)}
               accessibilityRole="button"
+              accessibilityLabel={`Unfollow ${item.name}`}
               onPress={() => void onUnfollow(item.id)}
               hitSlop={8}
               style={styles.unfollowButton}

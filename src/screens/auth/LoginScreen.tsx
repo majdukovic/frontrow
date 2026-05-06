@@ -57,6 +57,7 @@ export function LoginScreen() {
       <Pressable
         testID={testIds.login.forgotPasswordLink}
         accessibilityRole="link"
+        accessibilityLabel="Forgot password?"
         onPress={() => nav.navigate('ForgotPassword')}
         hitSlop={8}
       >

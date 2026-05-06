@@ -24,7 +24,9 @@ export function RecentlyViewedStrip({ onPress }: Props) {
 
   return (
     <View testID={testIds.events.recentlyViewedStrip} style={styles.block}>
-      <Text style={styles.heading}>Recently viewed</Text>
+      <Text accessibilityRole="header" style={styles.heading}>
+        Recently viewed
+      </Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

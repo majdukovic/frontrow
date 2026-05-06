@@ -1,7 +1,8 @@
 {
   "events": {
     "heading": "Veranstaltungen",
-    "placeholder": "Stöbere durch kommende Konzerte und Shows."
+    "placeholder": "Stöbere durch kommende Konzerte und Shows.",
+    "searchPlaceholder": "Suche Shows, Künstler, Städte…"
   },
   "myTickets": {
     "heading": "Meine Tickets",

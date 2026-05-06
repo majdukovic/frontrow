@@ -104,7 +104,7 @@ export function EventsListScreen() {
         <TextInput
           testID={testIds.events.searchInput}
           accessibilityLabel="Search events"
-          placeholder={t('events.heading')}
+          placeholder={t('events.searchPlaceholder')}
           value={q}
           onChangeText={setQ}
           style={[styles.searchInput, { flex: 1 }]}
@@ -251,6 +251,7 @@ export function EventsListScreen() {
                 key={opt.id}
                 testID={testIds.events.sortOption(opt.id)}
                 accessibilityRole="radio"
+                accessibilityLabel={opt.label}
                 accessibilityState={{ selected: sort === opt.id }}
                 onPress={() => {
                   setSort(opt.id);
