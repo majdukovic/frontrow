@@ -324,7 +324,6 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.lg,
   },
   chipRow: {
-    maxHeight: 56,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: theme.colors.border,
   },
@@ -334,16 +333,29 @@ const styles = StyleSheet.create({
     gap: theme.spacing.sm,
     alignItems: 'center',
   },
+  // Min-height + generous vertical padding fixes the Android clip where
+  // the chip's text descender gets cropped at the bottom of the pill.
   chip: {
-    paddingVertical: theme.spacing.xs + 2,
+    minHeight: 36,
+    paddingVertical: theme.spacing.sm,
     paddingHorizontal: theme.spacing.md,
     borderRadius: 999,
     borderWidth: 1,
     borderColor: theme.colors.border,
     backgroundColor: theme.colors.surface,
+    justifyContent: 'center',
   },
   chipSelected: { backgroundColor: theme.colors.primary, borderColor: theme.colors.primary },
-  chipText: { fontSize: theme.typography.body, color: theme.colors.text },
+  // includeFontPadding:false removes the extra ascender padding Android
+  // adds by default; lineHeight pins the visible text box to a known
+  // height so iOS and Android render identically.
+  chipText: {
+    fontSize: theme.typography.body,
+    lineHeight: 20,
+    color: theme.colors.text,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
+  },
   chipTextSelected: { color: theme.colors.primaryText, fontWeight: '600' },
   headerButton: { paddingHorizontal: theme.spacing.md },
   badge: {
