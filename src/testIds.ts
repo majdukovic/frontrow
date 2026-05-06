@@ -30,6 +30,7 @@ export const testIds = {
     filterRow: 'events.filterRow',
     filterChip: (slug: string) => `events.filterChip.${slug}`,
     errorMessage: 'events.errorMessage',
+    retryButton: 'events.retryButton',
     loadingFooter: 'events.loadingFooter',
     endOfList: 'events.endOfList',
   },

@@ -20,6 +20,7 @@ import { useEvents } from '../hooks/useEvents';
 import { useFavoriteEventIds } from '../hooks/useFavorites';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { useAuthStore } from '../state/auth';
+import { Button } from '../components/Button';
 import { EventListItem } from '../components/EventListItem';
 import type { EventsStackParamList } from '../navigation/types';
 
@@ -112,6 +113,12 @@ export function EventsListScreen() {
           <Text testID={testIds.events.errorMessage} style={styles.error}>
             Failed to load events.
           </Text>
+          <Button
+            testID={testIds.events.retryButton}
+            title="Retry"
+            variant="secondary"
+            onPress={() => void refetch()}
+          />
         </View>
       ) : (
         <FlatList

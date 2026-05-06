@@ -25,3 +25,22 @@ appId: app.frontrow.qa
     visible:
       id: 'events.errorMessage'
     timeout: 10000
+- assertVisible:
+    id: 'events.retryButton'
+
+# Clear the force-error and tap Retry — the list should populate.
+- tapOn:
+    id: 'tab.debug'
+- scrollUntilVisible:
+    element: 'None'
+    direction: UP
+    timeout: 5000
+- tapOn: 'None'
+- tapOn:
+    id: 'tab.events'
+- tapOn:
+    id: 'events.retryButton'
+- extendedWaitUntil:
+    visible:
+      id: 'events.list'
+    timeout: 10000
