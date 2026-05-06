@@ -160,6 +160,7 @@ export const testIds = {
     privacyRow: 'settings.privacyRow',
     termsRow: 'settings.termsRow',
     paymentMethodsRow: 'settings.paymentMethodsRow',
+    appearanceOption: (id: string) => `settings.appearance.${id}`,
     webview: {
       screen: 'screen.webview',
       content: 'webview.content',

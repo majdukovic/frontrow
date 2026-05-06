@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { I18nextProvider } from 'react-i18next';
@@ -16,6 +16,7 @@ import { useBillingStore } from './src/state/billing';
 import { useSettingsStore } from './src/state/settings';
 import { useRecentlyViewedStore } from './src/state/recentlyViewed';
 import { useDeepLinkScenario } from './src/hooks/useDeepLinkScenario';
+import { useThemeColors, useResolvedAppearance } from './src/hooks/useAppearance';
 import { ToastHost } from './src/components/ToastHost';
 import { OfflineBanner } from './src/components/OfflineBanner';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
@@ -26,12 +27,30 @@ function AppShell() {
   useDeepLinkScenario();
   useQaInvalidation();
   const onboardingPending = useSettingsStore((s) => s.onboardingPending);
+  const colors = useThemeColors();
+  const scheme = useResolvedAppearance();
+
+  // Build the navigation theme from our active palette so headers, the
+  // root background, and the status bar all match the user's choice.
+  const navTheme = scheme === 'dark' ? DarkTheme : DefaultTheme;
+  const themedNavTheme = {
+    ...navTheme,
+    colors: {
+      ...navTheme.colors,
+      background: colors.background,
+      card: colors.background,
+      text: colors.text,
+      border: colors.border,
+      primary: colors.primary,
+    },
+  };
+
   return (
-    <NavigationContainer linking={linking}>
+    <NavigationContainer linking={linking} theme={themedNavTheme}>
       <OfflineBanner />
       {onboardingPending ? <OnboardingScreen /> : <RootNavigator />}
       <ToastHost />
-      <StatusBar style="auto" />
+      <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
     </NavigationContainer>
   );
 }
