@@ -20,6 +20,10 @@
     "imageUrl": "https://picsum.photos/seed/evt_001/800/600",
     "soldOut": false,
     "tags": ["indie", "rock", "live"],
+    "refundPolicy": {
+      "refundableUntil": "2026-06-11T20:00:00.000Z",
+      "note": "Full refund up to 24 hours before doors. After that, transfer is still available."
+    },
     "tiers": [
       {
         "id": "ga",
@@ -105,6 +109,9 @@
     "imageUrl": "https://picsum.photos/seed/evt_003/800/600",
     "soldOut": true,
     "tags": ["festival", "electronic", "outdoor"],
+    "refundPolicy": {
+      "note": "All festival ticket sales are final. Tickets are transferable up to 7 days before the event."
+    },
     "lineup": [
       { "artist": "Neon Drift", "startsAt": "2026-08-15T17:00:00.000Z" },
       { "artist": "Yuki Pop Collective", "startsAt": "2026-08-15T19:00:00.000Z" },

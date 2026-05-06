@@ -40,6 +40,10 @@ export type Event = {
   tags: string[];
   tiers?: TicketTier[];
   lineup?: LineupSlot[];
+  refundPolicy?: {
+    refundableUntil?: string; // ISO; nullable for non-refundable events
+    note?: string;
+  };
 };
 
 export type TicketStatus = 'active' | 'used' | 'cancelled' | 'refunded' | 'refund_pending';

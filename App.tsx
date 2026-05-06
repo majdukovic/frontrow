@@ -14,6 +14,7 @@ import { useAuthStore } from './src/state/auth';
 import { useQaStore } from './src/state/qa';
 import { useBillingStore } from './src/state/billing';
 import { useSettingsStore } from './src/state/settings';
+import { useRecentlyViewedStore } from './src/state/recentlyViewed';
 import { useDeepLinkScenario } from './src/hooks/useDeepLinkScenario';
 import { ToastHost } from './src/components/ToastHost';
 import { OfflineBanner } from './src/components/OfflineBanner';
@@ -55,19 +56,23 @@ export default function App() {
   const hydrateQa = useQaStore((s) => s.hydrate);
   const hydrateBilling = useBillingStore((s) => s.hydrate);
   const hydrateSettings = useSettingsStore((s) => s.hydrate);
+  const hydrateRecent = useRecentlyViewedStore((s) => s.hydrate);
 
   const authHydrated = useAuthStore((s) => s.hydrated);
   const qaHydrated = useQaStore((s) => s.hydrated);
   const billingHydrated = useBillingStore((s) => s.hydrated);
   const settingsHydrated = useSettingsStore((s) => s.hydrated);
-  const allHydrated = authHydrated && qaHydrated && billingHydrated && settingsHydrated;
+  const recentHydrated = useRecentlyViewedStore((s) => s.hydrated);
+  const allHydrated =
+    authHydrated && qaHydrated && billingHydrated && settingsHydrated && recentHydrated;
 
   useEffect(() => {
     void hydrateAuth();
     void hydrateQa();
     void hydrateBilling();
     void hydrateSettings();
-  }, [hydrateAuth, hydrateQa, hydrateBilling, hydrateSettings]);
+    void hydrateRecent();
+  }, [hydrateAuth, hydrateQa, hydrateBilling, hydrateSettings, hydrateRecent]);
 
   return (
     <SafeAreaProvider>

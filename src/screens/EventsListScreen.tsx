@@ -28,6 +28,7 @@ import { EmptyState } from '../components/EmptyState';
 import { EventListItem } from '../components/EventListItem';
 import { EventListSkeleton } from '../components/EventListSkeleton';
 import { HeroEventCard } from '../components/HeroEventCard';
+import { RecentlyViewedStrip } from '../components/RecentlyViewedStrip';
 import type { EventSort } from '../api/services/events';
 import type { EventsStackParamList } from '../navigation/types';
 
@@ -175,12 +176,19 @@ export function EventsListScreen() {
           data={showHero ? items.slice(1) : items}
           keyExtractor={(e) => e.id}
           ListHeaderComponent={
-            showHero && items[0] ? (
-              <HeroEventCard
-                event={items[0]}
-                onPress={(e) => nav.navigate('EventDetail', { id: e.id })}
-              />
-            ) : null
+            <View>
+              {showHero && items[0] ? (
+                <HeroEventCard
+                  event={items[0]}
+                  onPress={(e) => nav.navigate('EventDetail', { id: e.id })}
+                />
+              ) : null}
+              {!debouncedQ && genre == null && !favoritesOnly ? (
+                <RecentlyViewedStrip
+                  onPress={(e) => nav.navigate('EventDetail', { id: e.id })}
+                />
+              ) : null}
+            </View>
           }
           renderItem={({ item }) => (
             <EventListItem

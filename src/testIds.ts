@@ -39,6 +39,8 @@ export const testIds = {
     heroCard: 'events.heroCard',
     sortButton: 'events.sortButton',
     sortOption: (id: string) => `events.sortOption.${id}`,
+    recentlyViewedStrip: 'events.recentlyViewedStrip',
+    recentlyViewedItem: (id: string) => `events.recentlyViewedItem.${id}`,
   },
   inbox: {
     screen: 'screen.inbox',

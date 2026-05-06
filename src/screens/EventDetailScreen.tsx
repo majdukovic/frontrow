@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
   ScrollView,
   View,
@@ -25,6 +26,7 @@ import {
   useToggleFollowArtist,
 } from '../hooks/useArtists';
 import { useAuthStore } from '../state/auth';
+import { useRecentlyViewedStore } from '../state/recentlyViewed';
 import { Button } from '../components/Button';
 import { formatPrice, formatEventDate, formatTimeShort } from '../utils/format';
 import type { EventsStackParamList } from '../navigation/types';
@@ -43,6 +45,10 @@ export function EventDetailScreen({ route }: Props) {
   const { data: followed } = useFollowedArtists();
   const toggleFollow = useToggleFollowArtist();
   const isFollowing = artist ? (followed ?? []).some((a) => a.id === artist.id) : false;
+  const pushRecent = useRecentlyViewedStore((s) => s.push);
+  useEffect(() => {
+    if (event?.id) void pushRecent(event.id);
+  }, [event?.id, pushRecent]);
 
   if (isLoading) {
     return (
@@ -154,6 +160,25 @@ export function EventDetailScreen({ route }: Props) {
           </View>
         ) : null}
 
+        {event.refundPolicy ? (
+          <View testID={testIds.eventDetail.refundPolicy} style={styles.refundBlock}>
+            <View style={styles.refundHeader}>
+              <Ionicons name="shield-checkmark-outline" size={18} color={theme.colors.success} />
+              <Text style={styles.refundTitle}>Refund policy</Text>
+            </View>
+            {event.refundPolicy.refundableUntil ? (
+              <Text style={styles.refundLine}>
+                Refundable until {formatEventDate(event.refundPolicy.refundableUntil)}
+              </Text>
+            ) : (
+              <Text style={styles.refundLine}>Non-refundable.</Text>
+            )}
+            {event.refundPolicy.note ? (
+              <Text style={styles.refundNote}>{event.refundPolicy.note}</Text>
+            ) : null}
+          </View>
+        ) : null}
+
         <View style={styles.actions}>
           <Button
             testID={testIds.eventDetail.buyButton}
@@ -233,6 +258,19 @@ const styles = StyleSheet.create({
   },
   lineupArtist: { flex: 1, fontSize: theme.typography.body, color: theme.colors.text },
   lineupHeadliner: { fontWeight: '700' },
+  refundBlock: {
+    marginTop: theme.spacing.lg,
+    padding: theme.spacing.md,
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.surface,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    gap: theme.spacing.xs,
+  },
+  refundHeader: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing.sm },
+  refundTitle: { fontSize: theme.typography.body, fontWeight: '700', color: theme.colors.text },
+  refundLine: { fontSize: theme.typography.body, color: theme.colors.text },
+  refundNote: { fontSize: theme.typography.caption, color: theme.colors.muted, lineHeight: 18 },
   actions: { marginTop: theme.spacing.lg },
   error: { color: theme.colors.danger, fontSize: theme.typography.body },
 });
