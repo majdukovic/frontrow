@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import * as Notifications from 'expo-notifications';
 
+import { failIfTriggered } from '../../state/qa';
+
 import { theme } from '../../theme';
 import { Button } from '../../components/Button';
 import { Section } from '../../components/Section';
@@ -27,6 +29,7 @@ export function NotificationsDemo() {
   };
 
   const fireImmediate = async () => {
+    failIfTriggered('push', 'Push delivery failed (QA trigger).');
     await Notifications.scheduleNotificationAsync({
       content: {
         title: 'FrontRow',
@@ -38,6 +41,7 @@ export function NotificationsDemo() {
   };
 
   const fireDelayed = async () => {
+    failIfTriggered('push', 'Push delivery failed (QA trigger).');
     await Notifications.scheduleNotificationAsync({
       content: { title: 'Tickets on sale', body: 'New event nearby — tap to browse.' },
       trigger: { seconds: 5, type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL },

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ScrollView, View, Text, StyleSheet, Alert, TextInput } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, Alert, Switch, TextInput } from 'react-native';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -245,6 +245,34 @@ export function DebugScreen() {
           testID={testIds.debug.replayOnboardingButton}
           label="Replay onboarding"
           onPress={() => void useSettingsStore.getState().startOnboarding()}
+        />
+      </Section>
+
+      <Section title="Failure triggers">
+        {(
+          [
+            ['push', 'Push delivery fails'],
+            ['geolocation', 'Geolocation denied'],
+            ['camera', 'Camera denied'],
+            ['imageUpload', 'Image upload fails'],
+            ['sessionExpired', 'Session expired'],
+            ['paymentTimeout', 'Payment timeout'],
+            ['reviewSubmit', 'Review submit fails'],
+          ] as const
+        ).map(([kind, label]) => (
+          <Row label={label} key={kind}>
+            <Switch
+              testID={testIds.debug.triggerToggle(kind)}
+              accessibilityLabel={label}
+              value={qa.triggers[kind]}
+              onValueChange={(v) => qa.setTrigger(kind, v)}
+            />
+          </Row>
+        ))}
+        <Row
+          testID={testIds.debug.clearTriggersButton}
+          label="Clear all triggers"
+          onPress={() => qa.clearTriggers()}
         />
       </Section>
 

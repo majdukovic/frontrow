@@ -48,4 +48,5 @@ executionOrder:
     - debug/scenario-deep-link
     - debug/force-error
     - debug/offline-banner
+    - debug/failure-trigger
     - capabilities/haptic

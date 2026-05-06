@@ -1,4 +1,4 @@
-import { applyQaDelay, applyQaForcedError, ApiClientError } from '../client';
+import { applyQaDelay, applyQaForcedError, applyQaTriggerError, ApiClientError } from '../client';
 import { mockState } from '../../mocks/state';
 import { now } from '../../state/qa';
 import type { Ticket } from '../types';
@@ -33,6 +33,7 @@ export async function purchaseTicket(
 ): Promise<Ticket> {
   await applyQaDelay();
   applyQaForcedError();
+  applyQaTriggerError('paymentTimeout');
   const userId = requireUser(token);
   const event = mockState.events.find((e) => e.id === input.eventId);
   if (!event) {

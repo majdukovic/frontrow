@@ -1,4 +1,4 @@
-import { applyQaDelay, applyQaForcedError, ApiClientError } from '../client';
+import { applyQaDelay, applyQaForcedError, applyQaTriggerError, ApiClientError } from '../client';
 import { mockState } from '../../mocks/state';
 import { now } from '../../state/qa';
 import type { Review } from '../types';
@@ -36,6 +36,8 @@ export async function postReview(
 ): Promise<Review> {
   await applyQaDelay();
   applyQaForcedError();
+  applyQaTriggerError('reviewSubmit');
+  if (input.imageUri) applyQaTriggerError('imageUpload');
   const userId = requireUser(token);
   const trimmed = input.text.trim();
   if (trimmed.length > REVIEW_MAX_LENGTH) {

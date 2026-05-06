@@ -1,0 +1,38 @@
+# Toggle the paymentTimeout failure trigger via deep link, attempt a
+# purchase, expect the deterministic timeout error.
+appId: app.frontrow.qa
+---
+- runFlow: ../auth/login.yaml
+
+- openLink: 'frontrow://debug/trigger/paymentTimeout'
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+
+- tapOn:
+    id: 'tab.events'
+- tapOn:
+    id: 'events.item.evt_001'
+- extendedWaitUntil:
+    visible:
+      id: 'screen.eventDetail'
+    timeout: 10000
+
+- tapOn:
+    id: 'eventDetail.buyButton'
+- assertVisible:
+    id: 'screen.buyTicket'
+
+- tapOn:
+    id: 'buyTicket.payButton'
+- assertVisible: 'Payment processor timed out. Please try again.'
+
+# Clean up so subsequent flows are unaffected.
+- openLink: 'frontrow://debug/trigger/paymentTimeout/off'
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'

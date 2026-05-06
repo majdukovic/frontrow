@@ -3,6 +3,7 @@ import { ScrollView, View, Text, StyleSheet, Alert } from 'react-native';
 import * as Location from 'expo-location';
 
 import { theme } from '../../theme';
+import { useQaStore } from '../../state/qa';
 import { Button } from '../../components/Button';
 import { Section } from '../../components/Section';
 import { Row } from '../../components/Row';
@@ -15,6 +16,10 @@ export function LocationDemo() {
   const [busy, setBusy] = useState(false);
 
   const request = async () => {
+    if (useQaStore.getState().triggers.geolocation) {
+      setPermission('denied' as Location.PermissionStatus);
+      return;
+    }
     const r = await Location.requestForegroundPermissionsAsync();
     setPermission(r.status);
   };

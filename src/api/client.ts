@@ -1,6 +1,7 @@
 import { useQaStore } from '../state/qa';
 
 import type { ApiError } from './types';
+import type { FailureTrigger } from '../state/qa';
 
 export class ApiClientError extends Error {
   readonly status: number;
@@ -18,7 +19,39 @@ export async function applyQaDelay(): Promise<void> {
   if (ms > 0) await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export function applyQaTriggerError(kind: FailureTrigger): void {
+  const triggers = useQaStore.getState().triggers;
+  if (!triggers[kind]) return;
+  if (kind === 'sessionExpired') {
+    throw new ApiClientError(401, {
+      code: 'session_expired',
+      message: 'Your session expired. Sign in again.',
+    });
+  }
+  if (kind === 'paymentTimeout') {
+    throw new ApiClientError(504, {
+      code: 'payment_timeout',
+      message: 'Payment processor timed out. Please try again.',
+    });
+  }
+  if (kind === 'reviewSubmit') {
+    throw new ApiClientError(503, {
+      code: 'service_unavailable',
+      message: 'Reviews service is temporarily unavailable.',
+    });
+  }
+  if (kind === 'imageUpload') {
+    throw new ApiClientError(413, {
+      code: 'upload_failed',
+      message: 'Image upload failed.',
+    });
+  }
+}
+
 export function applyQaForcedError(): void {
+  // Session-expired trigger short-circuits everything — it must run before
+  // the route-specific checks so a stale-token reproducer fails uniformly.
+  applyQaTriggerError('sessionExpired');
   const mode = useQaStore.getState().forceError;
   if (mode === 'none') return;
   if (mode === '4xx') {

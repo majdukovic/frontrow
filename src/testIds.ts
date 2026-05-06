@@ -128,6 +128,8 @@ export const testIds = {
     forceErrorToggle: 'debug.forceErrorToggle',
     crashButton: 'debug.crashButton',
     replayOnboardingButton: 'debug.replayOnboardingButton',
+    triggerToggle: (kind: string) => `debug.trigger.${kind}`,
+    clearTriggersButton: 'debug.clearTriggers',
   },
   eventDetail: {
     screen: 'screen.eventDetail',

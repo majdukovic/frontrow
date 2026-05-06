@@ -4,8 +4,18 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { scenarios, type ScenarioId } from '../mocks/seed/scenarios/registry';
 import { resetMockState } from '../mocks/state';
-import { useQaStore } from '../state/qa';
+import { useQaStore, type FailureTrigger } from '../state/qa';
 import { track } from '../state/analytics';
+
+const TRIGGER_NAMES: readonly FailureTrigger[] = [
+  'push',
+  'geolocation',
+  'camera',
+  'imageUpload',
+  'sessionExpired',
+  'paymentTimeout',
+  'reviewSubmit',
+];
 
 /**
  * Listens for two debug deep links:
@@ -32,8 +42,20 @@ export function useDeepLinkScenario(): void {
       if (/(?:^|\/)debug\/reset$/.test(segments)) {
         resetMockState();
         void setScenario(null);
+        useQaStore.getState().clearTriggers();
         void qc.invalidateQueries();
         track('debug.mockState.reset');
+        return;
+      }
+
+      const trig = /(?:^|\/)debug\/trigger\/([\w-]+)(?:\/(on|off))?$/.exec(segments);
+      if (trig) {
+        const kind = trig[1] as FailureTrigger;
+        const next = trig[2] === 'off' ? false : true;
+        if (TRIGGER_NAMES.includes(kind)) {
+          useQaStore.getState().setTrigger(kind, next);
+          track('debug.trigger.set', { kind, on: next });
+        }
         return;
       }
 

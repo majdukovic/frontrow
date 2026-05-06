@@ -3,6 +3,7 @@ import { ScrollView, View, Text, Image, StyleSheet, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 import { theme } from '../../theme';
+import { useQaStore } from '../../state/qa';
 import { Button } from '../../components/Button';
 import { Section } from '../../components/Section';
 import { Row } from '../../components/Row';
@@ -11,6 +12,10 @@ export function CameraDemo() {
   const [uri, setUri] = useState<string | null>(null);
 
   const fromCamera = async () => {
+    if (useQaStore.getState().triggers.camera) {
+      Alert.alert('Camera denied', 'Camera permission is required.');
+      return;
+    }
     const perm = await ImagePicker.requestCameraPermissionsAsync();
     if (!perm.granted) {
       Alert.alert('Camera denied', 'Camera permission is required.');
