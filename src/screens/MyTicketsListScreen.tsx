@@ -17,11 +17,12 @@ import { theme } from '../theme';
 import { testIds } from '../testIds';
 import { Card } from '../components/Card';
 import { EmptyState } from '../components/EmptyState';
-import { useMyTickets } from '../hooks/useTickets';
+import { SwipeableRow } from '../components/SwipeableRow';
+import { useMyTickets, useCancelTicket } from '../hooks/useTickets';
 import { useAuthStore } from '../state/auth';
 import { formatPrice, formatEventDate } from '../utils/format';
 import type { TicketsStackParamList } from '../navigation/types';
-import type { TicketStatus } from '../api/types';
+import type { TicketStatus, Ticket } from '../api/types';
 
 type Filter = 'all' | 'active' | 'past';
 
@@ -32,6 +33,7 @@ export function MyTicketsListScreen() {
   const nav = useNavigation<NativeStackNavigationProp<TicketsStackParamList>>();
   const token = useAuthStore((s) => s.token);
   const { data, isLoading, isRefetching, refetch, error } = useMyTickets();
+  const cancel = useCancelTicket();
   const [filter, setFilter] = useState<Filter>('all');
 
   const items = useMemo(() => {
@@ -107,23 +109,11 @@ export function MyTicketsListScreen() {
         }
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
         renderItem={({ item }) => (
-          <Pressable
-            testID={testIds.myTickets.item(item.id)}
-            accessibilityRole="button"
-            accessibilityLabel={`${item.tier} ticket, ${item.status}`}
+          <TicketRow
+            ticket={item}
             onPress={() => nav.navigate('TicketDetail', { id: item.id })}
-          >
-            <Card>
-              <Text style={styles.cardTitle}>{item.tier}</Text>
-              <Text style={styles.cardMeta}>Purchased {formatEventDate(item.purchasedAt)}</Text>
-              <Text style={styles.cardMeta}>
-                {item.quantity} × · {formatPrice(item.totalCents, item.currency)} ·{' '}
-                <Text testID={`myTickets.status.${item.id}`} style={styles.status}>
-                  {item.status}
-                </Text>
-              </Text>
-            </Card>
-          </Pressable>
+            onSwipeCancel={() => cancel.mutate(item.id)}
+          />
         )}
         ListEmptyComponent={
           <EmptyState
@@ -135,6 +125,50 @@ export function MyTicketsListScreen() {
         }
       />
     </View>
+  );
+}
+
+function TicketRow({
+  ticket,
+  onPress,
+  onSwipeCancel,
+}: {
+  ticket: Ticket;
+  onPress: () => void;
+  onSwipeCancel: () => void;
+}) {
+  const card = (
+    <Pressable
+      testID={testIds.myTickets.item(ticket.id)}
+      accessibilityRole="button"
+      accessibilityLabel={`${ticket.tier} ticket, ${ticket.status}`}
+      onPress={onPress}
+    >
+      <Card>
+        <Text style={styles.cardTitle}>{ticket.tier}</Text>
+        <Text style={styles.cardMeta}>Purchased {formatEventDate(ticket.purchasedAt)}</Text>
+        <Text style={styles.cardMeta}>
+          {ticket.quantity} × · {formatPrice(ticket.totalCents, ticket.currency)} ·{' '}
+          <Text testID={`myTickets.status.${ticket.id}`} style={styles.status}>
+            {ticket.status}
+          </Text>
+        </Text>
+      </Card>
+    </Pressable>
+  );
+
+  // Only active tickets are swipeable — past/cancelled rows have nothing
+  // to act on, so we render the card without the swipe wrapper.
+  if (!ACTIVE_STATUSES.includes(ticket.status)) return card;
+
+  return (
+    <SwipeableRow
+      actionLabel="Cancel"
+      actionTestID={testIds.myTickets.swipeCancel(ticket.id)}
+      onAction={onSwipeCancel}
+    >
+      {card}
+    </SwipeableRow>
   );
 }
 

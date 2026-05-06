@@ -38,6 +38,7 @@ executionOrder:
     - tickets/buy
     - tickets/tier-select
     - tickets/detail-cancel
+    - tickets/swipe-cancel
     - tickets/transfer
     - events/reviews
     - events/favorites

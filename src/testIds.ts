@@ -56,6 +56,7 @@ export const testIds = {
     item: (id: string) => `myTickets.item.${id}`,
     filterChip: (slug: string) => `myTickets.filterChip.${slug}`,
     emptyState: 'myTickets.emptyState',
+    swipeCancel: (id: string) => `myTickets.swipeCancel.${id}`,
   },
   ticketDetail: {
     screen: 'screen.ticketDetail',
@@ -130,6 +131,7 @@ export const testIds = {
     replayOnboardingButton: 'debug.replayOnboardingButton',
     triggerToggle: (kind: string) => `debug.trigger.${kind}`,
     clearTriggersButton: 'debug.clearTriggers',
+    networkProfile: (id: string) => `debug.networkProfile.${id}`,
   },
   eventDetail: {
     screen: 'screen.eventDetail',

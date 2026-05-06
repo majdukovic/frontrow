@@ -8,7 +8,7 @@ import { testIds } from '../testIds';
 import { Section } from '../components/Section';
 import { Row } from '../components/Row';
 import { Button } from '../components/Button';
-import { useQaStore } from '../state/qa';
+import { useQaStore, NETWORK_PROFILES } from '../state/qa';
 import { useAuthStore } from '../state/auth';
 import { useAnalyticsStore } from '../state/analytics';
 import { useBillingStore, type PurchaseOutcome } from '../state/billing';
@@ -17,7 +17,6 @@ import { scenarios, type ScenarioId } from '../mocks/seed/scenarios/registry';
 import { resetMockState } from '../mocks/state';
 import { getBuildInfo } from '../utils/buildInfo';
 
-const PRESET_DELAYS = [0, 500, 1500, 3000];
 const PRESET_TIME_OFFSETS: { label: string; ms: number }[] = [
   { label: 'Now', ms: 0 },
   { label: '+1h', ms: 60 * 60 * 1000 },
@@ -196,22 +195,23 @@ export function DebugScreen() {
             ))}
           </View>
         </Row>
-        <Row label="Delay">
+        <Row label="Profile">
           <View style={styles.chips}>
-            {PRESET_DELAYS.map((ms) => (
+            {NETWORK_PROFILES.map((p) => (
               <Button
-                key={ms}
-                testID={`debug.networkDelay.${ms}`}
-                title={ms === 0 ? 'Off' : `${ms}ms`}
-                variant={qa.networkDelayMs === ms ? 'primary' : 'secondary'}
+                key={p.id}
+                testID={testIds.debug.networkProfile(p.id)}
+                title={p.label}
+                variant={qa.networkProfile === p.id ? 'primary' : 'secondary'}
                 onPress={() => {
-                  void qa.setNetworkDelayMs(ms);
+                  void qa.setNetworkProfile(p.id);
                   void qc.invalidateQueries();
                 }}
               />
             ))}
           </View>
         </Row>
+        <Row label="Effective delay" value={`${qa.networkDelayMs}ms`} />
       </Section>
 
       <Section title="Locale">
@@ -254,6 +254,7 @@ export function DebugScreen() {
             ['push', 'Push delivery fails'],
             ['geolocation', 'Geolocation denied'],
             ['camera', 'Camera denied'],
+            ['biometric', 'Biometric unavailable'],
             ['imageUpload', 'Image upload fails'],
             ['sessionExpired', 'Session expired'],
             ['paymentTimeout', 'Payment timeout'],

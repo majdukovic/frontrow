@@ -42,5 +42,6 @@ export const storeKeys = {
   qaScenario: 'frontrow.qa.scenario',
   qaForceError: 'frontrow.qa.forceError',
   qaNetworkDelayMs: 'frontrow.qa.networkDelayMs',
+  qaNetworkProfile: 'frontrow.qa.networkProfile',
   qaLocale: 'frontrow.qa.locale',
 } as const;

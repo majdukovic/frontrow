@@ -11,6 +11,7 @@ const TRIGGER_NAMES: readonly FailureTrigger[] = [
   'push',
   'geolocation',
   'camera',
+  'biometric',
   'imageUpload',
   'sessionExpired',
   'paymentTimeout',

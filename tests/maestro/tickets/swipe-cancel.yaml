@@ -1,0 +1,35 @@
+# Cancel an active ticket via swipe — exercises the gesture path
+# (swipe left on the row → tap the revealed Cancel action). The
+# in-detail "Cancel" path is covered separately by detail-cancel.yaml;
+# this flow is specifically about the swipe-and-tap gesture.
+appId: app.frontrow.qa
+---
+- runFlow: ../auth/login.yaml
+
+- tapOn:
+    id: 'tab.myTickets'
+- assertVisible:
+    id: 'screen.myTickets'
+
+# Filter to active tickets so we know tkt_001 is renderable as
+# swipeable (past tickets render as plain cards).
+- tapOn:
+    id: 'myTickets.filterChip.active'
+
+- swipe:
+    direction: LEFT
+    from:
+      id: 'myTickets.item.tkt_001'
+
+- extendedWaitUntil:
+    visible:
+      id: 'myTickets.swipeCancel.tkt_001'
+    timeout: 3000
+- tapOn:
+    id: 'myTickets.swipeCancel.tkt_001'
+
+# Status flips to refund_pending — same end state as the in-detail
+# cancel path, just reached via the gesture.
+- extendedWaitUntil:
+    visible: 'refund pending'
+    timeout: 5000

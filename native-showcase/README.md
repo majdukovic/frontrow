@@ -6,11 +6,16 @@ exercise authentic native targets with Espresso (Android) and XCUITest
 (iOS). The whole point: prove that the same `testID` contract used by
 the JS-driven screens carries over to native code.
 
-This directory ships as a **scaffold**. The files compile and the tests
-target the right symbols, but they aren't wired into the live `ios/` and
-`android/` projects automatically — Expo prebuild owns those folders and
-arbitrary additions get clobbered by the next prebuild. The wiring
-instructions below explain how to opt in safely.
+An **Expo config plugin** at `plugins/with-native-showcase.js` copies
+these files into `ios/` and `android/` on every `expo prebuild` and
+wires them into the host projects (Xcode target membership,
+AndroidManifest activity, MainApplication package registration). That
+means the files survive `--clean` and stay in lockstep with whatever
+the prebuild pipeline emits.
+
+The "manual wiring" instructions below are kept as a reference for
+what the plugin does under the hood, in case you want to apply the
+changes by hand or audit the plugin's output.
 
 ## What's in here
 
@@ -54,10 +59,9 @@ match the same string used in `src/testIds.ts`.
    autolink picks it up via `RCT_EXTERN_METHOD`.
 4. Add the test target file `tests/xcuitest/NativeDemoTests.swift` to
    the existing `FrontRowUITests` target (Xcode → Edit Scheme → Test).
-5. Re-run `npx expo prebuild --clean` is **not** safe afterwards — it
-   would wipe these manual additions. Track them in a config plugin
-   instead: see [Expo config plugin](https://docs.expo.dev/config-plugins/introduction/)
-   for the long-term path.
+5. The config plugin handles all of the above on prebuild. The manual
+   steps are for understanding/debugging only — running them by hand
+   on top of the plugin would create duplicate entries.
 
 ## Wiring it up — Android
 
@@ -107,11 +111,26 @@ The XCUITest scaffold (`testNativeDemoOpens_AndIncrementUpdatesCounter`)
 already targets the `debug.openNativeDemo` testID, so the test goes
 green the moment the wiring is complete.
 
-## Why this isn't autolinked
+## How the plugin works
 
-The Expo prebuild flow regenerates `ios/` and `android/` from a config
-plugin pipeline. Adding files directly is fine for a one-off but doesn't
-survive a `--clean` prebuild. The proper path is to author this as a
-config plugin in `app.config.ts` so the prebuild step copies these
-files into the right locations on every regenerate. That's deferred to a
-follow-up — this scaffold is the prototype.
+`plugins/with-native-showcase.js` runs on every `expo prebuild` and:
+
+1. **iOS file copy** (`withDangerousMod`): copies `ios/*.swift` into
+   `ios/FrontRow/`.
+2. **iOS Xcode membership** (`withXcodeProject`): adds the copied
+   files to the FrontRow target so they actually compile.
+3. **Android file copy** (`withDangerousMod`): copies the
+   `com/frontrow/nativedemo/` package tree into
+   `android/app/src/main/java/`.
+4. **Android manifest** (`withAndroidManifest`): appends
+   `<activity android:name="com.frontrow.nativedemo.NativeDemoActivity" />`
+   inside `<application>`.
+5. **Android package registration** (`withMainApplication`): inserts
+   the import + `packages.add(NativeDemoPackage())` into
+   `MainApplication.kt`.
+
+All steps are idempotent — re-running prebuild on already-modified
+files is a no-op rather than producing duplicates.
+
+The plugin is registered in `app.json` as
+`"./plugins/with-native-showcase"`.
