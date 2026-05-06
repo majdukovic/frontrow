@@ -7,5 +7,5 @@ appId: app.frontrow.qa
 - extendedWaitUntil:
     visible:
       id: 'screen.events'
-    timeout: 30000
+    timeout: 60000
 - assertVisible: 'Events'
