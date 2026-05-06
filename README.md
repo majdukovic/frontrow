@@ -38,7 +38,7 @@ That's it. No backend to run, no accounts to create, no secrets to configure.
 - **Deep-link contract** — every public deep link documented in [docs/DEEPLINKS.md](docs/DEEPLINKS.md), including `frontrow://debug/seed/<scenario>` to put the app into a known state from a single `launchApp` directive.
 - **Mock IAP** — products, receipts, restore-purchases, with QA-controlled outcomes (success, decline, cancel, pending) — see [docs/tutorials/SCENARIOS_AS_FIXTURES.md](docs/tutorials/SCENARIOS_AS_FIXTURES.md).
 - **Device capability demos** — camera, microphone, location, biometric, haptics, calendar, share, notifications. Each has a dedicated screen with stable testIDs.
-- **Realistic product surfaces** — onboarding pager · search with debounce + genre + favorites filters · paginated infinite scroll · star-rated reviews · ticket detail with QR + cancel + transfer · saved payment methods CRUD · edit-profile with dirty-state guard · forgot-password (email → OTP → reset) · offline banner — every feature ships with at least one Maestro flow.
+- **Realistic product surfaces** — onboarding pager · debounced search with genre + favorites filters · skeleton loaders · paginated infinite scroll · star-rated reviews · ticket detail with QR + cancel + transfer · Active/Past ticket filter · saved payment methods CRUD · edit-profile with dirty-state guard · forgot-password (email → OTP → reset) · notification inbox with unread badge · offline banner · share to system sheet · retry on error — every feature ships with at least one Maestro flow.
 
 ## Test frameworks
 
