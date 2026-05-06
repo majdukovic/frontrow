@@ -27,6 +27,7 @@ export const NETWORK_PROFILES: { id: NetworkProfile; label: string; delayMs: num
  *   push          — local push delivery throws (NotificationsDemo)
  *   geolocation   — location permission resolves "denied"
  *   camera        — camera permission resolves "denied"
+ *   biometric     — biometric probe reports unavailable; auth fails
  *   imageUpload   — image picker / upload throws an upload error
  *   sessionExpired— every API call throws 401 session-expired
  *   paymentTimeout— purchaseTicket throws a 504 payment timeout
@@ -39,6 +40,7 @@ export type FailureTrigger =
   | 'push'
   | 'geolocation'
   | 'camera'
+  | 'biometric'
   | 'imageUpload'
   | 'sessionExpired'
   | 'paymentTimeout'
@@ -50,6 +52,7 @@ const EMPTY_TRIGGERS: FailureTriggers = {
   push: false,
   geolocation: false,
   camera: false,
+  biometric: false,
   imageUpload: false,
   sessionExpired: false,
   paymentTimeout: false,

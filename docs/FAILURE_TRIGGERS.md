@@ -17,6 +17,7 @@ produces both failures on the next purchase attempt.
 | `push`           | Local push delivery throws on the next `fakePush` / scheduled-notification    | Notifications capability demo           |
 | `geolocation`    | Permission request resolves "denied" without showing the system prompt        | Location capability demo                |
 | `camera`         | Camera permission request resolves "denied"                                   | Camera capability demo                  |
+| `biometric`      | Biometric probe reports unavailable; `authenticate` resolves with failure     | Biometric capability demo               |
 | `imageUpload`    | `postReview` with an `imageUri` throws `ApiClientError(413, upload_failed)`   | Reviews flow                            |
 | `sessionExpired` | Every API call throws `ApiClientError(401, session_expired)`                  | All authed services                     |
 | `paymentTimeout` | `purchaseTicket` throws `ApiClientError(504, payment_timeout)`                | Buy flow                                |

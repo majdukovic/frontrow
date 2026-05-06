@@ -254,6 +254,7 @@ export function DebugScreen() {
             ['push', 'Push delivery fails'],
             ['geolocation', 'Geolocation denied'],
             ['camera', 'Camera denied'],
+            ['biometric', 'Biometric unavailable'],
             ['imageUpload', 'Image upload fails'],
             ['sessionExpired', 'Session expired'],
             ['paymentTimeout', 'Payment timeout'],

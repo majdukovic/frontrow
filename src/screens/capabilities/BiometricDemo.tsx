@@ -6,6 +6,7 @@ import { theme } from '../../theme';
 import { Button } from '../../components/Button';
 import { Section } from '../../components/Section';
 import { Row } from '../../components/Row';
+import { useQaStore } from '../../state/qa';
 
 export function BiometricDemo() {
   const [supported, setSupported] = useState<string>('—');
@@ -13,6 +14,13 @@ export function BiometricDemo() {
   const [lastResult, setLastResult] = useState<string>('—');
 
   const probe = async () => {
+    if (useQaStore.getState().triggers.biometric) {
+      // Simulate a device that hasn't enrolled biometrics or doesn't
+      // support them — the QA "biometric unavailable" failure mode.
+      setSupported('none');
+      setEnrolled('no');
+      return;
+    }
     const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
     const isEnrolled = await LocalAuthentication.isEnrolledAsync();
     setSupported(
@@ -32,6 +40,10 @@ export function BiometricDemo() {
   };
 
   const auth = async () => {
+    if (useQaStore.getState().triggers.biometric) {
+      setLastResult('failed: biometric_unavailable');
+      return;
+    }
     const r = await LocalAuthentication.authenticateAsync({
       promptMessage: 'Authenticate to view your ticket',
       fallbackLabel: 'Use passcode',
