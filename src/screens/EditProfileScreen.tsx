@@ -78,13 +78,7 @@ export function EditProfileScreen() {
     setDiscardOpen(false);
     setDisplayName(initialName);
     setBio(initialBio);
-    // dirtyRef is updated synchronously below by the next render; using
-    // requestAnimationFrame keeps a single repaint between dialog close
-    // and navigation pop.
-    requestAnimationFrame(() => {
-      dirtyRef.current = false;
-      nav.goBack();
-    });
+    nav.goBack();
   };
 
   return (
