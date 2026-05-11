@@ -57,17 +57,20 @@ adb install -r FrontRow.apk
 The `.app` inside is a Release build for the iOS Simulator on Apple Silicon (`arm64`). It will not run on a physical iPhone or on Intel Macs.
 
 ```bash
-# Unzip
+# 1. Unzip the artifact
 unzip FrontRow.app.zip
-# Pick a booted simulator (or boot one in Xcode/Simulator.app first)
-xcrun simctl list devices booted
-# Install
+
+# 2. Make sure a simulator is booted. If `xcrun simctl list devices booted`
+#    prints no devices, open Xcode → Window → Devices and Simulators and
+#    boot any iOS 18+ iPhone, or run:
+xcrun simctl boot "iPhone 17 Pro"        # or any device from `xcrun simctl list devices`
+
+# 3. Install + launch
 xcrun simctl install booted FrontRow.app
-# Launch
 xcrun simctl launch booted app.frontrow.qa
 ```
 
-Tip: you can also drag-and-drop the unzipped `FrontRow.app` onto the simulator window. Same result.
+Tip: you can also drag-and-drop the unzipped `FrontRow.app` onto a running Simulator window — same effect.
 
 **For a real iPhone**: you'll need to build from source with your own provisioning profile (see [Quick start](#quick-start)). A signed `.ipa` for TestFlight may land in a later release.
 
