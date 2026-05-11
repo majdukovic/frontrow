@@ -1,9 +1,10 @@
 # Transfer a ticket to a known FrontRow recipient (friend@frontrow.app).
 # Also covers the validation paths: invalid email + recipient not found.
 #
-# tag: android-only — the conditional <Text> for transferError doesn't render
-# (or doesn't surface to Maestro's view tree) when transferError state changes
-# inside RN Modal on iOS. Validation logic is unit-tested in
+# tag: android-only — the transferError <Text> now renders unconditionally
+# (height/opacity-hidden when empty) which is a real iOS improvement,
+# but RN <Modal> on iOS still hides inner testIDs from Maestro's
+# accessibility tree. Validation logic stays unit-tested in
 # src/api/services/__tests__/tickets.test.ts.
 appId: app.frontrow.qa
 tags:

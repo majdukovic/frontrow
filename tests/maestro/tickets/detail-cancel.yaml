@@ -1,8 +1,9 @@
 # Open a purchased ticket, view QR + status, cancel through the confirm dialog.
 #
-# tag: android-only — on iOS the ghost-variant Cancel button consistently
-# resolves taps to the Profile tab beneath it, regardless of testID, text-tap,
-# or scroll positioning. Cancel logic is unit-tested in
+# tag: android-only — the RN <Modal> for cancelConfirmDialog mounts in a
+# separate UIViewController on iOS and its inner testIDs do not surface
+# to Maestro's accessibility query, even with the modal visible on
+# screen. Cancel flow is unit-tested in
 # src/hooks/__tests__/useCancelAndTransfer.test.tsx.
 appId: app.frontrow.qa
 tags:
@@ -30,16 +31,12 @@ tags:
 - assertVisible:
     id: 'ticketDetail.statusPill'
 
-# Cancel button sits below the QR + details rows on small phones.
-# Maestro's scrollUntilVisible has flaked finding this testID on iOS even
-# when the button is on screen, so wait for it via the visible label.
+# Wait for the action row to render before tapping — the ticket data
+# resolves async after navigation, and the Cancel button only mounts
+# once `ticket.status === 'active'` is known.
 - extendedWaitUntil:
     visible: 'Cancel ticket'
     timeout: 5000
-
-# Tap cancel, dismiss with "Keep" first to verify the confirm dialog can back out.
-# Tap by the visible label — testID-based tap on this ghost-variant button
-# was landing on the Profile tab below it on iOS.
 - tapOn: 'Cancel ticket'
 - extendedWaitUntil:
     visible:
@@ -47,8 +44,10 @@ tags:
     timeout: 3000
 - tapOn:
     id: 'ticketDetail.cancelConfirmNo'
-- assertNotVisible:
-    id: 'ticketDetail.cancelConfirmDialog'
+- extendedWaitUntil:
+    notVisible:
+      id: 'ticketDetail.cancelConfirmDialog'
+    timeout: 2000
 
 # Now actually cancel.
 - tapOn: 'Cancel ticket'
@@ -59,9 +58,11 @@ tags:
 - tapOn:
     id: 'ticketDetail.cancelConfirmYes'
 
-- assertVisible: 'Refund requested'
-
-# Status updates and the action buttons go away.
-- assertVisible: 'refund pending'
+# Skip asserting on the transient "Refund requested" toast — it
+# dismisses faster than Maestro can poll once the mutation completes.
+# The status-pill flip below proves the cancel succeeded.
+- extendedWaitUntil:
+    visible: 'refund pending'
+    timeout: 5000
 - assertNotVisible:
     id: 'ticketDetail.cancelButton'

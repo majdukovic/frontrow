@@ -1,11 +1,19 @@
-# Toggle the paymentTimeout failure trigger via the Debug screen,
-# attempt a purchase, expect the deterministic timeout error.
+# Toggle the paymentTimeout failure trigger via deep link, attempt a
+# purchase, expect the deterministic timeout error.
 #
-# tag: android-only — on iOS, both the deep-link path
-# (Linking.addEventListener doesn't reliably re-deliver to a foregrounded app)
-# and the toggle path (scrollUntilVisible can't reach the failure-triggers
-# section, native UISwitch testIDs are not exposed) fail. Trigger application
-# is unit-tested in src/state/__tests__/qa.test.ts and
+# Why the kill+openLink dance: on iOS, Linking.addEventListener does not
+# reliably re-deliver a URL to a foregrounded app, so we cannot toggle a
+# trigger by openLink-ing while the app is still running. Killing first
+# guarantees the URL is processed via the platform's cold-launch path
+# (UIApplicationDelegate openURL on iOS, Intent extras on Android), which
+# is dependable on both platforms.
+#
+# tag: android-only — Android passes end-to-end. iOS gets through the
+# cold-launch + trigger set, but the persisted trigger does not appear
+# to apply to the in-flight purchase call. Likely an iOS-specific race
+# between Zustand persist rehydration and useDeepLinkScenario firing on
+# cold-launch. Trigger logic is unit-tested in
+# src/state/__tests__/qa.test.ts and
 # src/hooks/__tests__/usePurchaseTicket.test.tsx.
 appId: app.frontrow.qa
 tags:
@@ -13,21 +21,17 @@ tags:
 ---
 - runFlow: ../_setup.yaml
 
-- tapOn:
-    id: 'tab.debug'
-- assertVisible:
-    id: 'screen.debug'
-# Switch testID doesn't always surface on iOS (native UISwitch nested under
-# a Row); scroll by the row text label and tap by accessibility label.
-- scrollUntilVisible:
-    element:
-      text: 'Payment timeout'
-    direction: DOWN
-    timeout: 5000
-- tapOn: 'Payment timeout'
+# Kill the app, then cold-launch directly into the trigger deep link.
+# This is more robust than tapping the Switch on the Debug screen — that
+# Switch's testID does not surface to Maestro on iOS (it's nested inside
+# a Row), and scrollUntilVisible on the row text was flaky.
+- stopApp
+- openLink: 'frontrow://debug/trigger/paymentTimeout/on'
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 20000
 
-- tapOn:
-    id: 'tab.events'
 - tapOn:
     id: 'events.item.evt_001'
 - extendedWaitUntil:
@@ -45,13 +49,3 @@ tags:
 - extendedWaitUntil:
     visible: 'Payment processor timed out. Please try again.'
     timeout: 10000
-
-# Clean up so subsequent flows are unaffected.
-- tapOn:
-    id: 'tab.debug'
-- scrollUntilVisible:
-    element:
-      text: 'Payment timeout'
-    direction: DOWN
-    timeout: 5000
-- tapOn: 'Payment timeout'

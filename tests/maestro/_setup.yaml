@@ -19,6 +19,16 @@ appId: app.frontrow.qa
 
 - openLink: 'frontrow://e2e/setup'
 
+# iOS Release builds prompt "Open in FrontRow?" when openLink hits a
+# different URL scheme than the one the app was originally launched
+# with. Dismiss the prompt if it appears. Debug builds and Android
+# do not show this dialog, so the runFlow guard makes it a no-op.
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+
 # Wait for the auth state to actually propagate. events.inboxButton
 # only renders when isSignedIn is true — using it as the
 # "fast-boot complete" gate prevents downstream flows from racing
