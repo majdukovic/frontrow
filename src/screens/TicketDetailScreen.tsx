@@ -194,11 +194,18 @@ export function TicketDetailScreen({ route }: Props) {
               onChangeText={setTransferEmail}
               style={styles.input}
             />
-            {transferError ? (
-              <Text testID={testIds.ticketDetail.transferError} style={styles.error}>
-                {transferError}
-              </Text>
-            ) : null}
+            {/* Render the error <Text> unconditionally so it lives in the
+                view tree from mount. Inside an iOS RN <Modal>, conditional
+                children added on a state update can fail to surface in
+                the accessibility hierarchy that XCUITest/Maestro queries —
+                an empty Text node updating its content avoids that. */}
+            <Text
+              testID={testIds.ticketDetail.transferError}
+              style={[styles.error, !transferError && styles.errorHidden]}
+              accessibilityElementsHidden={!transferError}
+            >
+              {transferError ?? ''}
+            </Text>
             <View style={styles.modalActions}>
               <Button
                 testID={testIds.ticketDetail.transferCancelButton}
@@ -305,4 +312,5 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
   },
   error: { color: theme.colors.danger, fontSize: theme.typography.body },
+  errorHidden: { height: 0, opacity: 0 },
 });
