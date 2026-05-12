@@ -8,8 +8,7 @@ It's the kind of app you'd clone, run on a simulator in under five minutes, and 
 
 ## Why this exists
 
-- The widely-used Sauce Labs `my-demo-app-rn` was deprecated in May 2024.
-- Existing open-source samples cover login + cart and stop there.
+- Most existing open-source samples cover login + cart and stop there.
 - Nothing systematically exercises date control, location mocking, IAP simulation, purchase restoration, microphone, haptic feedback, biometric auth, push, deep-link-to-anywhere, and seedable scenarios all in one place.
 
 FrontRow fills that gap. MIT-licensed, fork-friendly, no backend required.
