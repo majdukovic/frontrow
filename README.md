@@ -24,24 +24,51 @@ Clone, run on a simulator in under five minutes, then use it to learn — or tea
 
 ## See it in action
 
-A Maestro flow driving the JS-to-native bridge through the QA Debug Menu, captured on a Pixel 7a running the release APK:
+A Maestro flow driving the ticket-purchase journey — events list → event detail → tier selection → confirmation — captured on a Pixel 7a running the release APK:
 
 <p align="center">
-  <img src="docs/media/maestro-native-demo.gif" alt="Maestro driving FrontRow on Android" width="280" />
+  <img src="docs/media/maestro-buy.gif" alt="Maestro driving the buy flow on Android" width="280" />
 </p>
 
 The full flow YAML — the entire test that produced that recording:
 
 ```yaml
-# tests/maestro/native/native-demo.yaml
+# tests/maestro/tickets/buy.yaml
 appId: app.frontrow.qa
 ---
-- launchApp:
-    clearState: true
-- extendedWaitUntil:
-    visible:
-      id: 'screen.events'
-    timeout: 20000
+- runFlow: ../_setup.yaml # signs in the demo user via deep link
+
+- tapOn:
+    id: 'tab.events'
+- assertVisible:
+    id: 'screen.events'
+- tapOn:
+    id: 'events.item.evt_001'
+- assertVisible:
+    id: 'screen.eventDetail'
+
+- tapOn:
+    id: 'eventDetail.buyButton'
+- assertVisible:
+    id: 'screen.buyTicket'
+- tapOn:
+    id: 'buyTicket.payButton'
+
+- assertVisible: 'Ticket purchased'
+
+- tapOn:
+    id: 'tab.myTickets'
+- assertVisible:
+    id: 'screen.myTickets'
+```
+
+And a JS-to-native bridge flow exercising a hand-rolled Swift `UIViewController` / Kotlin `Activity` from the QA Debug Menu:
+
+```yaml
+# tests/maestro/native/native-demo.yaml (excerpt)
+appId: app.frontrow.qa
+---
+- runFlow: ../_setup.yaml
 - tapOn:
     id: 'tab.debug'
 - scrollUntilVisible:
@@ -50,39 +77,11 @@ appId: app.frontrow.qa
     direction: DOWN
 - tapOn:
     id: 'debug.openNativeDemo'
-- extendedWaitUntil:
-    visible: 'Increment'
-    timeout: 5000
 - assertVisible: '0'
 - tapOn: 'Increment'
 - tapOn: 'Increment'
 - assertVisible: '2'
 - tapOn: 'Close'
-- assertVisible:
-    id: 'screen.debug'
-```
-
-And a more typical end-to-end flow exercising the buy path:
-
-```yaml
-# tests/maestro/tickets/buy.yaml (excerpt)
-appId: app.frontrow.qa
----
-- runFlow: ../_setup.yaml # signs in the demo user via deep link
-- tapOn:
-    id: 'tab.events'
-- tapOn:
-    id: 'events.item.evt_001'
-- tapOn:
-    id: 'eventDetail.buyButton'
-- tapOn:
-    id: 'buyTicket.payButton'
-- extendedWaitUntil:
-    visible:
-      id: 'screen.myTickets'
-    timeout: 10000
-- assertVisible:
-    id: 'myTickets.item.tkt_001'
 ```
 
 Both flows pass on Android emulator and iPhone simulator without changes — the `id:` matchers map to `resource-id` on Android and `accessibilityIdentifier` on iOS via the central registry in [`src/testIds.ts`](src/testIds.ts).
