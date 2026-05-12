@@ -1,10 +1,106 @@
+<div align="center">
+
 # FrontRow
 
-> An open-source mobile app explicitly designed as a **QA automation training playground**.
+**An open-source mobile app designed as a QA automation training playground.**
 
-FrontRow is a concert & events ticketing app for iOS and Android, built so that QA engineers can practice mobile test automation against a realistic-looking app that ships with stable accessibility identifiers, a fully-featured debug menu, deterministic seed data, and a complete set of hooks for every device-only capability that browsers can't reach.
+[![License](https://img.shields.io/github/license/majdukovic/frontrow?color=FF3B5C)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/majdukovic/frontrow/ci.yml?branch=main&label=CI)](https://github.com/majdukovic/frontrow/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/majdukovic/frontrow?color=FF3B5C)](../../releases)
+[![Platforms](https://img.shields.io/badge/platforms-iOS%20%7C%20Android-2D2D2D)](#install-a-prebuilt-binary)
+[![React Native](https://img.shields.io/badge/built%20with-React%20Native%20%2B%20Expo-2D2D2D)](https://expo.dev)
 
-It's the kind of app you'd clone, run on a simulator in under five minutes, and then use to learn — or teach — Maestro, Appium, Espresso, and XCUITest, all targeting the same identifiers.
+<br />
+
+<img src="docs/media/01-events.png" alt="FrontRow events feed" width="280" />
+
+<br />
+
+A concert & events ticketing app built for QA engineers. Stable test IDs, a deep QA Debug Menu, deterministic seed data, bridged native screens, and ready-to-run flows for Maestro, Appium, Espresso, and XCUITest — all targeting the same identifiers.
+
+Clone, run on a simulator in under five minutes, then use it to learn — or teach — mobile test automation against a realistic surface.
+
+</div>
+
+## See it in action
+
+A Maestro flow driving the JS-to-native bridge through the QA Debug Menu, captured on a Pixel 7a running the release APK:
+
+<p align="center">
+  <img src="docs/media/maestro-native-demo.gif" alt="Maestro driving FrontRow on Android" width="280" />
+</p>
+
+The full flow YAML — the entire test that produced that recording:
+
+```yaml
+# tests/maestro/native/native-demo.yaml
+appId: app.frontrow.qa
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: 'screen.events'
+    timeout: 20000
+- tapOn:
+    id: 'tab.debug'
+- scrollUntilVisible:
+    element:
+      id: 'debug.openNativeDemo'
+    direction: DOWN
+- tapOn:
+    id: 'debug.openNativeDemo'
+- extendedWaitUntil:
+    visible: 'Increment'
+    timeout: 5000
+- assertVisible: '0'
+- tapOn: 'Increment'
+- tapOn: 'Increment'
+- assertVisible: '2'
+- tapOn: 'Close'
+- assertVisible:
+    id: 'screen.debug'
+```
+
+And a more typical end-to-end flow exercising the buy path:
+
+```yaml
+# tests/maestro/tickets/buy.yaml (excerpt)
+appId: app.frontrow.qa
+---
+- runFlow: ../_setup.yaml # signs in the demo user via deep link
+- tapOn:
+    id: 'tab.events'
+- tapOn:
+    id: 'events.item.evt_001'
+- tapOn:
+    id: 'eventDetail.buyButton'
+- tapOn:
+    id: 'buyTicket.payButton'
+- extendedWaitUntil:
+    visible:
+      id: 'screen.myTickets'
+    timeout: 10000
+- assertVisible:
+    id: 'myTickets.item.tkt_001'
+```
+
+Both flows pass on Android emulator and iPhone simulator without changes — the `id:` matchers map to `resource-id` on Android and `accessibilityIdentifier` on iOS via the central registry in [`src/testIds.ts`](src/testIds.ts).
+
+## Screen tour
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/media/01-events.png" width="200" /><br /><sub><b>Events feed</b></sub></td>
+    <td align="center"><img src="docs/media/02-eventDetail.png" width="200" /><br /><sub><b>Event detail + lineup</b></sub></td>
+    <td align="center"><img src="docs/media/03-buyTicket.png" width="200" /><br /><sub><b>Tier picker</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/media/04-ticketQr.png" width="200" /><br /><sub><b>Your ticket (QR)</b></sub></td>
+    <td align="center"><img src="docs/media/05-debugMenu.png" width="200" /><br /><sub><b>QA Debug Menu</b></sub></td>
+    <td align="center"><img src="docs/media/06-nativeDemo.png" width="200" /><br /><sub><b>Bridged native screen</b></sub></td>
+  </tr>
+</table>
 
 ## Why this exists
 
