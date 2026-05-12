@@ -143,7 +143,7 @@ If you just want to poke at the app without a toolchain, grab the prebuilt artif
 
 ## Install a prebuilt binary
 
-Each tagged release ships two artifacts so you can poke at FrontRow without setting up a React Native toolchain.
+Grab the latest artifacts from the [Releases page](https://github.com/majdukovic/frontrow/releases) — each tagged release ships an Android APK and an iOS Simulator `.app.zip` so you can poke at FrontRow without setting up a React Native toolchain.
 
 ### Android — `FrontRow.apk` (real device or emulator)
 
