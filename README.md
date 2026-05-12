@@ -16,9 +16,11 @@
 
 <br />
 
-A concert & events ticketing app built for QA engineers. Stable test IDs, a deep QA Debug Menu, deterministic seed data, bridged native screens, and ready-to-run flows for Maestro, Appium, Espresso, and XCUITest — all targeting the same identifiers.
+A concert & events ticketing app for QA automation engineers, automation learners, and manual testers. Stable test IDs, a deep QA Debug Menu, deterministic seed data, bridged native screens, and ready-to-run flows for Maestro, Appium, Espresso, and XCUITest — all targeting the same identifiers.
 
 Clone, run on a simulator in under five minutes, then use it to learn — or teach — mobile test automation against a realistic surface.
+
+**If FrontRow helps you practice mobile testing, please star the repo.** It surfaces the project for the next QA engineer searching for a sandbox, and lets me know it's worth investing more time in.
 
 </div>
 
@@ -101,19 +103,33 @@ Both flows pass on Android emulator and iPhone simulator without changes — the
   </tr>
 </table>
 
-## Why this exists
+## Who this is for
 
-- Most existing open-source samples cover login + cart and stop there.
-- Nothing systematically exercises date control, location mocking, IAP simulation, purchase restoration, microphone, haptic feedback, biometric auth, push, deep-link-to-anywhere, and seedable scenarios all in one place.
+- **QA automation engineers** picking up Maestro, Appium, Espresso, or XCUITest — or comparing them side by side against the same testID contract.
+- **Anyone learning mobile test automation** from scratch and wanting a real app instead of a TODO list.
+- **Manual testers** who want a realistic surface with controllable failure modes (network errors, expired tickets, denied permissions, declined purchases) — no flaky backend, no shared test account.
+- **Educators, bootcamps, and team leads** building hands-on labs: MIT-licensed, fork-friendly, runs offline.
+- **Tool authors** validating frameworks, recorders, or accessibility audits against a non-trivial production-style app.
 
-FrontRow fills that gap. MIT-licensed, fork-friendly, no backend required.
+## What you can practice
+
+Each item maps to features and dedicated docs in the repo — nothing is hand-wavy.
+
+- **Build cross-platform selectors that actually work.** Central testID registry → `accessibilityIdentifier` on iOS + `resource-id` on Android. Same matcher in every framework. See [docs/TEST_IDS.md](docs/TEST_IDS.md).
+- **Drive an app into any state via deep links** instead of brittle UI navigation. `frontrow://debug/seed/<scenario>`, `frontrow://debug/trigger/<kind>/on`, `frontrow://e2e/setup`. Catalog: [docs/DEEPLINKS.md](docs/DEEPLINKS.md).
+- **Simulate the failure modes that bite in production**: 4xx / 5xx / timeout / offline, on demand, per-request or globally. Network profiles for slow-3G/2G testing.
+- **Test in-app purchase flows deterministically** — flip outcomes to success, decline, cancel, or pending without a sandbox account. Restore purchases works too.
+- **Practice time-travel testing** for expired tickets, refund windows, and stale data without waiting in real time. `+1h`, `+1d`, `+1w`, `+1mo` presets.
+- **Exercise device capabilities under test**: camera, microphone, GPS, biometric, haptics, calendar, share, notifications — each with its own screen and stable testIDs.
+- **Bridge to raw native code** (Swift `UIViewController`, Kotlin `Activity`) using the same testID contract — practice driving native surfaces, not just JS.
+- **Write the same flow in four frameworks** and see which fits your team. `tests/maestro/auth/login.yaml` and `tests/appium/specs/login.spec.ts` target identical IDs.
 
 ## Quick start
 
 Requires Node 20+ and either Xcode or Android Studio.
 
 ```bash
-git clone <this repo>
+git clone https://github.com/majdukovic/frontrow.git
 cd frontrow
 npm install
 npm run ios       # or: npm run android
@@ -190,6 +206,8 @@ Tip: you can also drag-and-drop the unzipped `FrontRow.app` onto a running Simul
 
 Once the app is on a device or simulator:
 
+> **Manual testers — start at step 5.** The Debug tab is built for you: flip scenarios, force errors, and time-travel through ticket states without any code or automation runner. Steps 1–4 are the happy path you'll want to know first.
+
 1. **Onboarding** — three intro slides. Tap "Skip" or swipe through and "Get started".
 2. **Sign in** — Profile tab → Sign in. Demo creds are filled in (`demo@frontrow.app` / `password`). Or skip auth entirely; most of the app works signed out.
 3. **Browse events** — the Events tab opens to a feed of mocked concert listings. Search, filter by genre, scroll for infinite pagination.
@@ -229,15 +247,26 @@ The driver auto-installs on first run on iOS (~90s). Subsequent runs are fast.
 
 ## What's inside
 
-- **React Native + Expo (prebuilt)** — single TypeScript codebase, native iOS and Android projects committed.
-- **Local-first** — all data lives in MMKV, seeded from JSON fixtures, no backend.
-- **Stable test IDs** — central registry in `src/testIds.ts`. testIDs become `accessibilityIdentifier` on iOS and `resource-id` on Android, so Maestro / Appium / Espresso / XCUITest all hit the same selectors. A custom ESLint rule (`frontrow/require-testid`) flags interactive elements that ship without one.
+**Test infrastructure**
+
+- **Stable test IDs** — central registry in `src/testIds.ts` maps to `accessibilityIdentifier` (iOS) and `resource-id` (Android). A custom ESLint rule (`frontrow/require-testid`) flags interactive elements that ship without one.
 - **QA Debug Menu** — Build info · Jump-to-screen · Device-capability demos · Seed scenarios · Time travel · Force error (4xx / 5xx / timeout / offline) · Network delay · Locale override · Replay onboarding · Fake push · Crash · IAP outcome control · Analytics event log · Reset.
-- **Deep-link contract** — every public deep link documented in [docs/DEEPLINKS.md](docs/DEEPLINKS.md), including `frontrow://debug/seed/<scenario>` to put the app into a known state from a single `launchApp` directive.
-- **Mock IAP** — products, receipts, restore-purchases, with QA-controlled outcomes (success, decline, cancel, pending) — see [docs/tutorials/SCENARIOS_AS_FIXTURES.md](docs/tutorials/SCENARIOS_AS_FIXTURES.md).
-- **Device capability demos** — camera, microphone, location, biometric, haptics, calendar, share, notifications. Each has a dedicated screen with stable testIDs.
-- **Realistic product surfaces** — onboarding pager · debounced search with genre + favorites filters · skeleton loaders · paginated infinite scroll · star-rated reviews · ticket detail with QR + cancel + transfer · Active/Past ticket filter · saved payment methods CRUD · edit-profile with dirty-state guard · forgot-password (email → OTP → reset) · notification inbox with unread badge · offline banner · share to system sheet · retry on error — every feature ships with at least one Maestro flow.
+- **Deep-link contract** — every public deep link is documented, including `frontrow://debug/seed/<scenario>` to put the app into a known state from a single `launchApp` directive. See [docs/DEEPLINKS.md](docs/DEEPLINKS.md).
+- **Mock IAP** — products, receipts, restore-purchases, with QA-controlled outcomes (success, decline, cancel, pending). See [docs/tutorials/SCENARIOS_AS_FIXTURES.md](docs/tutorials/SCENARIOS_AS_FIXTURES.md).
+
+**Product surfaces (every feature ships with at least one Maestro flow)**
+
+- **Realistic UX** — onboarding pager · debounced search with genre + favorites filters · skeleton loaders · paginated infinite scroll · star-rated reviews · ticket detail with QR + cancel + transfer · Active/Past ticket filter · saved payment methods CRUD · edit-profile with dirty-state guard · forgot-password (email → OTP → reset) · notification inbox with unread badge · offline banner · share to system sheet · retry on error.
+- **Device capabilities** — camera, microphone, location, biometric, haptics, calendar, share, notifications. Each has a dedicated screen with stable testIDs.
+
+**Native code, on purpose**
+
 - **Hand-rolled native screen** — a Swift `UIViewController` (iOS) and Kotlin `AppCompatActivity` (Android) bridged to JS so QA can drive raw native surfaces with the same testID contract used everywhere else. Open it from the Debug tab → "Native demo", or via `tests/maestro/native/native-demo.yaml`. Source: [`native-showcase/`](native-showcase/) — copied into the host iOS/Android projects on every `expo prebuild` by [`plugins/with-native-showcase.js`](plugins/with-native-showcase.js).
+
+**Engineering**
+
+- **React Native + Expo (prebuilt)** — single TypeScript codebase, native iOS and Android projects committed.
+- **Local-first** — all data lives in MMKV, seeded from JSON fixtures, no backend, no accounts.
 
 ## Test frameworks
 
@@ -275,6 +304,8 @@ A flow is a flow regardless of framework. Look at `tests/maestro/auth/login.yaml
 | 7     | Tutorials, scenario recipes, README polish                                                 | ✓      |
 | 8     | Realistic product surfaces (onboarding, favorites, ticket transfer, payment methods, etc.) | ✓      |
 
+Phase 0–8 are complete. The repo is feature-stable, but ideas are very welcome: more framework examples (Detox, KIF), contract-testing playgrounds, visual regression scaffolds, accessibility audit recipes. File an issue with a scenario you'd love to see — that's the fastest way to shape what lands next.
+
 ## A note on the Debug tab
 
 The `Debug` tab is registered unconditionally in `src/navigation/RootNavigator.tsx` and ships visible in release builds. That is **intentional** — exposing the QA surface is the whole point of this app. If you fork FrontRow as the base for a real product, gate that registration behind `__DEV__` or a build flag before publishing.
@@ -285,6 +316,15 @@ The deep-link handler in `src/hooks/useDeepLinkScenario.ts` follows the same pri
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Issues, scenario ideas, and tutorials are all welcome.
 
+## Show your support
+
+If FrontRow helped you learn something, here are four small things that make a big difference:
+
+- **Star the repo** at the top of the page — it's the strongest signal that helps other QA engineers find it through GitHub search.
+- **Share it with your team or community** — Slack, Discord, LinkedIn, a course channel. The more testers who can practice on a realistic surface, the better the discipline gets.
+- **File an issue with a scenario you'd love to see** — a missing failure mode, a tricky flow, a framework you'd add. Concrete asks shape the roadmap faster than abstract feedback.
+- **Send a PR** — even a tiny one. New Maestro flows, a typo fix, a tutorial, a translation. Start with [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## License
 
-[MIT](LICENSE).
+[MIT](LICENSE) — free for personal, educational, and commercial use. Fork it, rebrand it, drop it into your training program. (See the [note above](#a-note-on-the-debug-tab) if you're using FrontRow as a base for a real product.)
