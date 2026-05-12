@@ -123,6 +123,24 @@ That's it. No backend to run, no accounts to create, no secrets to configure.
 
 > Some Phase 5+ capabilities (MMKV, real local notifications) require a development build. The standard `npm run ios` / `npm run android` covers that — Expo Go alone is not enough once `expo prebuild` has run.
 
+### On a real device
+
+The defaults above target a simulator/emulator. To build from source onto a USB-connected phone:
+
+**Android phone**
+
+1. Enable Developer Options → USB debugging on the phone.
+2. Plug it in and confirm `adb devices` lists it as `device` (not `unauthorized`).
+3. `npm run android` — `expo run:android` auto-detects the connected device and prompts if both an emulator and a phone are available.
+
+**iPhone**
+
+1. Open `ios/FrontRow.xcworkspace` in Xcode at least once, pick your team under Signing & Capabilities, and change the bundle identifier from `app.frontrow.qa` to something unique to your account (mirror the change in `app.config.ts`). A free Apple ID works for development builds.
+2. Trust your developer certificate on the device: Settings → General → VPN & Device Management.
+3. `npm run ios -- --device` — passes through to `expo run:ios --device`, which lists connected iPhones to pick from. The first build is slow; subsequent ones are fast.
+
+If you just want to poke at the app without a toolchain, grab the prebuilt artifacts from [Releases](https://github.com/majdukovic/frontrow/releases) — Android sideloads on real devices, iOS is Simulator-only.
+
 ## Install a prebuilt binary
 
 Each tagged release ships two artifacts so you can poke at FrontRow without setting up a React Native toolchain.
